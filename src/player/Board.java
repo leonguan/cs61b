@@ -4,19 +4,15 @@ public class Board {
 	final static int BOARD_SIZE = 8;
 	final static int BLACK = 0;
 	final static int WHITE = 1;
-	final static int NONE = -1;
+	// Don't need anymore because we have chips. Will just set to null
+	// final static int NONE = null;
 
-	private int[][] array;
+	private Chip[][] array;
 	private int blackPieces;
 	private int whitePieces;
 
 	public Board() {
-		this.array = new int[BOARD_SIZE][BOARD_SIZE];
-		for (int i = 0; i < BOARD_SIZE; i++) {
-			for (int j = 0; j < BOARD_SIZE; j++) {
-				this.array[i][j] = -1;
-			}
-		}
+		this.array = new Chip[BOARD_SIZE][BOARD_SIZE];
 		this.blackPieces = 0;
 		this.whitePieces = 0;
 	}
@@ -54,14 +50,14 @@ public class Board {
 			} else {
 				this.whitePieces += 1;
 			}
-			this.array[m.x1][m.y1] = color;
+			this.array[m.x1][m.y1] = new Chip(m.x1, m.y1, color);
 
 		} else if (m.moveKind == Move.STEP) {
-			if (this.array[m.x2][m.y2] != color) {
+			if (this.array[m.x2][m.y2].color != color) {
 				return false;
 			}
-			this.array[m.x1][m.x1] = color;
-			this.array[m.x2][m.y2] = Board.NONE;
+			this.array[m.x1][m.x1] = new Chip(m.x1, m.y1, color);
+			this.array[m.x2][m.y2] = null;
 		}
 		return true;
 	}
@@ -84,7 +80,7 @@ public class Board {
 	 * @return
 	 */
 	private boolean positionIsNull(Move m) {
-		return this.array[m.x1][m.y1] == Board.NONE;
+		return this.array[m.x1][m.y1] == null;
 	}
 
 	/**
