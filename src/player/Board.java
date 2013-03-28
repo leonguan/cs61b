@@ -2,8 +2,6 @@ package player;
 
 public class Board {
 	final static int BOARD_SIZE = 8;
-	final static int BLACK = 0;
-	final static int WHITE = 1;
 	// Don't need anymore because we have chips. Will just set to null
 	// final static int NONE = null;
 
@@ -45,7 +43,7 @@ public class Board {
 			return false;
 		}
 		if (m.moveKind == Move.ADD) {
-			if (color == Board.BLACK) {
+			if (color == MachinePlayer.BLACK) {
 				this.blackPieces += 1;
 			} else {
 				this.whitePieces += 1;
@@ -74,6 +72,29 @@ public class Board {
 	}
 
 	/**
+	 * Returns true if player with specified color has a valid network.
+	 * 
+	 * @param color
+	 * @return
+	 */
+	boolean isValidNetwork(int color) {
+		return false;
+	}
+
+	/**
+	 * Gets chip at position (x,y).
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	Chip getChip(int x, int y){
+		return this.array[x][y];
+	}
+	
+	boolean shouldAdd(){
+		return this.blackPieces < 10 && this.whitePieces < 10;
+	}
+	/**
 	 * Checks if position at x1,y1 in the board is null. Returns true if null.
 	 * 
 	 * @param m
@@ -91,7 +112,7 @@ public class Board {
 	 * @param m
 	 * @return
 	 */
-	private boolean validMove(Move m, int color) {
+	 boolean validMove(Move m, int color) {
 		if (!positionIsNull(m)) {
 			return false;
 		}
@@ -105,13 +126,11 @@ public class Board {
 			return false;
 		}
 		if (m.moveKind == Move.STEP) {
-			boolean validStep = this.blackPieces == 10
-					&& this.whitePieces == 10;
-			if (m.x2 < 0 || m.x2 >= BOARD_SIZE || !validStep) {
+			if (m.x2 < 0 || m.x2 >= BOARD_SIZE || shouldAdd()) {
 				return false;
 			}
 		} else if (m.moveKind == Move.ADD) {
-			return this.blackPieces < 10 && this.whitePieces < 10;
+			return shouldAdd();
 		}
 		return true;
 	}
