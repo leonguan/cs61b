@@ -1,20 +1,28 @@
 package player;
 
 public class Board {
-	final static int SIZE = 8;
+	final static int BOARD_SIZE = 8;
 	private int[][] array;
 
 	public Board() {
-		this.array = new int[SIZE][SIZE];
-		for (int i = 0; i < SIZE; i++) {
-			for (int j = 0; j < SIZE; j++) {
+		this.array = new int[BOARD_SIZE][BOARD_SIZE];
+		for (int i = 0; i < BOARD_SIZE; i++) {
+			for (int j = 0; j < BOARD_SIZE; j++) {
 				this.array[i][j] = -1;
 			}
 		}
 	}
 
+	public Board(Board b, Move m, int color ){
+		for (int i = 0; i< BOARD_SIZE; i++){
+			for (int j = 0; j< BOARD_SIZE; j++){
+				this.array[i][j]= b.array[i][j];
+			}
+		}
+		addMove(m, color);
+	}
 	/**
-	 * Updates the gameboard if the move is valid.
+	 * Updates the game board if the move is valid.
 	 * 
 	 * @param m
 	 *            - move to be added
@@ -70,11 +78,11 @@ public class Board {
 	 * @return
 	 */
 	private boolean validMove(Move m) {
-		if (m.x1 < 0 || m.x1 >= SIZE) {
+		if (m.x1 < 0 || m.x1 >= BOARD_SIZE) {
 			return false;
 		}
 		if (m.moveKind == Move.STEP) {
-			if (m.x2 < 0 || m.x2 >= SIZE) {
+			if (m.x2 < 0 || m.x2 >= BOARD_SIZE) {
 				return false;
 			}
 		}
