@@ -85,7 +85,8 @@ public class Board {
 
 	/**
 	 * Checks if x1,y1 and x2,y2, if the moveKind is Move.STEP, are out of
-	 * bounds. Also calls positionIsNull(Move m). Checks if conditions for add/step moves are met.
+	 * bounds. Also calls positionIsNull(Move m). Checks if conditions for
+	 * add/step moves are met.
 	 * 
 	 * @param m
 	 * @return
@@ -94,11 +95,13 @@ public class Board {
 		if (!positionIsNull(m)) {
 			return false;
 		}
-		if (m.x1 < 0 || m.x1 >= BOARD_SIZE || m.y1 < 0 || m.y1 >= BOARD_SIZE
-				|| (m.x1 == 0 && m.y1 == 0) || (m.x1 == 0 && m.y1 == BOARD_SIZE - 1)
+		boolean pos1OutBounds = m.x1 < 0 || m.x1 >= BOARD_SIZE || m.y1 < 0
+				|| m.y1 >= BOARD_SIZE;
+		boolean isCorner = (m.x1 == 0 && m.y1 == 0)
+				|| (m.x1 == 0 && m.y1 == BOARD_SIZE - 1)
 				|| (m.x1 == BOARD_SIZE - 1 && m.y1 == BOARD_SIZE - 1)
-				|| (m.x1 == BOARD_SIZE - 1 && m.y1 == 0)
-				){
+				|| (m.x1 == BOARD_SIZE - 1 && m.y1 == 0);
+		if (pos1OutBounds || isCorner) {
 			return false;
 		}
 		if (m.moveKind == Move.STEP) {
@@ -107,11 +110,9 @@ public class Board {
 			if (m.x2 < 0 || m.x2 >= BOARD_SIZE || !validStep) {
 				return false;
 			}
-		}
-		else if (m.moveKind == Move.ADD){
-			return this.blackPieces <10 && this.whitePieces <10;
+		} else if (m.moveKind == Move.ADD) {
+			return this.blackPieces < 10 && this.whitePieces < 10;
 		}
 		return true;
 	}
-
 }
