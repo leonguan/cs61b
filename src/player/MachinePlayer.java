@@ -32,12 +32,10 @@ public class MachinePlayer extends Player {
 	// the internal game board) as a move by "this" player.
 	public Move chooseMove() {
 		// TODO update gameBoard & make move.
-		int searched = 0;
-		while (searched < this.searchDepth) {
-
-			searched++;
-		}
-		return new Move();
+		Best move = chooseMove(this.color, -1, 1, this.searchDepth);
+		Move m = move.m;
+		this.board = new Board(this.board, m, this.color);
+		return m;
 	}
 
 	public Best chooseMove(int side, double alpha, double beta, int depth) {
@@ -68,27 +66,38 @@ public class MachinePlayer extends Player {
 					m.moveKind = Move.ADD;
 					m.x1 = i;
 					m.y1 = j;
-					if (this.board.validMove(m, side)) {
-						Board currBoard = this.board;
-						Board afterMove = new Board(this.board, m, side);
-						this.board = afterMove;
-						reply = chooseMove((side + 1) % 2, alpha, beta,
-								depth - 1);
-						this.board = currBoard;
-						if (side == this.color && (reply.score > myBest.score)) {
-							myBest.m = m;
-							myBest.score = reply.score;
-							alpha = reply.score;
-						} else if (side == (this.color + 1) % 2
-								&& (reply.score <= myBest.score)) {
-							myBest.m = m;
-							myBest.score = reply.score;
-							beta = reply.score;
+				} else {
+					m.moveKind = Move.STEP;
+					m.x1 = i;
+					m.y1 = j;
+					for (int x = 0; x < Board.BOARD_SIZE; x++) {
+						for (int y = 0; y < Board.BOARD_SIZE; y++) {
+							m.x2 = x;
+							m.y2 = y;
 						}
-					} else {
-						continue;
 					}
 				}
+
+				if (this.board.validMove(m, side)) {
+					Board currBoard = this.board;
+					Board afterMove = new Board(this.board, m, side);
+					this.board = afterMove;
+					reply = chooseMove((side + 1) % 2, alpha, beta, depth - 1);
+					this.board = currBoard;
+					if (side == this.color && (reply.score > myBest.score)) {
+						myBest.m = m;
+						myBest.score = reply.score;
+						alpha = reply.score;
+					} else if (side == (this.color + 1) % 2
+							&& (reply.score <= myBest.score)) {
+						myBest.m = m;
+						myBest.score = reply.score;
+						beta = reply.score;
+					}
+				} else {
+					continue;
+				}
+
 				if (alpha >= beta) {
 					return myBest;
 				}
