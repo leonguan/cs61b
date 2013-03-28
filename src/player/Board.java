@@ -34,7 +34,7 @@ public class Board {
 		if (m.moveKind == Move.QUIT) {
 			return true;
 		}
-		if (!positionIsNull(m) || !validMove(m)) {
+		if (!validMove(m)) {
 			return false;
 		}
 		if (m.moveKind == Move.ADD) {
@@ -72,12 +72,15 @@ public class Board {
 
 	/**
 	 * Checks if x1,y1 and x2,y2, if the moveKind is Move.STEP, are out of
-	 * bounds.
+	 * bounds. Also calls positionIsNull(Move m).
 	 * 
 	 * @param m
 	 * @return
 	 */
 	private boolean validMove(Move m) {
+		if (!positionIsNull(m)){
+			return false;
+		}
 		if (m.x1 < 0 || m.x1 >= BOARD_SIZE) {
 			return false;
 		}
