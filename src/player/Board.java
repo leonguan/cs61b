@@ -94,7 +94,11 @@ public class Board {
 		if (!positionIsNull(m)) {
 			return false;
 		}
-		if (m.x1 < 0 || m.x1 >= BOARD_SIZE) {
+		if (m.x1 < 0 || m.x1 >= BOARD_SIZE || m.y1 < 0 || m.y1 >= BOARD_SIZE
+				|| (m.x1 == 0 && m.y1 == 0) || (m.x1 == 0 && m.y1 == BOARD_SIZE - 1)
+				|| (m.x1 == BOARD_SIZE - 1 && m.y1 == BOARD_SIZE - 1)
+				|| (m.x1 == BOARD_SIZE - 1 && m.y1 == 0)
+				){
 			return false;
 		}
 		if (m.moveKind == Move.STEP) {
@@ -105,8 +109,7 @@ public class Board {
 			}
 		}
 		else if (m.moveKind == Move.ADD){
-			boolean validAdd = this.blackPieces <10 && this.whitePieces <10;
-			return validAdd;
+			return this.blackPieces <10 && this.whitePieces <10;
 		}
 		return true;
 	}
