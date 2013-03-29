@@ -64,7 +64,6 @@ public class MachinePlayer extends Player {
 			for (int j = 0; j < Board.BOARD_SIZE; j++) {
 				Move m = new Move();
 				if (this.board.shouldAdd()) {
-					System.out.println("ADDED");
 					m.moveKind = Move.ADD;
 					m.x1 = i;
 					m.y1 = j;

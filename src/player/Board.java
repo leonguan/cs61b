@@ -52,7 +52,7 @@ public class Board {
 			this.array[m.x1][m.y1] = new Chip(m.x1, m.y1, color);
 
 		} else if (m.moveKind == Move.STEP) {
-			if (this.array[m.x2][m.y2].color != color) {
+			if (this.array[m.x2][m.y2]==null || this.array[m.x2][m.y2].color != color) {
 				return false;
 			}
 			this.array[m.x1][m.x1] = new Chip(m.x1, m.y1, color);
@@ -94,7 +94,7 @@ public class Board {
 	}
 
 	boolean shouldAdd() {
-		return this.blackPieces < 10 && this.whitePieces < 10;
+		return this.blackPieces < 10 || this.whitePieces < 10;
 	}
 
 	/**
@@ -145,23 +145,29 @@ public class Board {
 	 * @return
 	 */
 	private boolean connectedChips(Move m, int color) {
-		boolean connected = false;
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 2; j++) {
-				if (i == 0 && j == 0) {
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				if (i == 0 && j == 0 || m.x1 + i >= BOARD_SIZE || m.x1 + i < 0
+						|| m.y1 + j >= BOARD_SIZE || m.y1 + j < 0) {
 					continue;
 				} else {
-					Chip first = this.array[m.x1 + i][m.x1 + j];
+					Chip first = this.array[m.x1 + i][m.y1 + j];
 					if (first != null && first.color == color) {
-						for (int x = 0; x < 2; x++) {
-							for (int y = 0; y < 2; y++) {
-								if (i == 0 && j == 0) {
+						for (int x = -1; x < 2; x++) {
+							for (int y = -1; y < 2; y++) {
+								if (x == 0 && y == 0
+										|| m.x1 + i + x >= BOARD_SIZE
+										|| m.x1 + i + x < 0 || m.y1 + j + y < 0
+										|| m.y1 + j + y >= BOARD_SIZE) {
 									continue;
 								} else {
 									Chip second = this.array[m.x1 + i + x][m.y1
 											+ j + y];
 									if (second != null && second.color == color) {
-										connected = true;
+										System.out.println(first);
+										System.out.println(second);
+										System.out.println();
+										return true;
 									}
 								}
 							}
@@ -170,6 +176,6 @@ public class Board {
 				}
 			}
 		}
-		return connected;
+		return false;
 	}
 }
