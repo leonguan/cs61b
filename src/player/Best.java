@@ -13,4 +13,7 @@ public class Best {
 		this.score = score;
 		this.m = m;
 	}
+	public String toString(){
+		return "Score: " + score + " move: " + m.toString();
+	}
 }

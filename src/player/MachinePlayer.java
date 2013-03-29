@@ -18,6 +18,7 @@ public class MachinePlayer extends Player {
 	public MachinePlayer(int color) {
 		this.color = color;
 		this.board = new Board();
+		this.searchDepth = 3;
 	}
 
 	// Creates a machine player with the given color and search depth. Color is
@@ -34,6 +35,7 @@ public class MachinePlayer extends Player {
 		// TODO update gameBoard & make move.
 		Best move = chooseMove(this.color, -1, 1, this.searchDepth);
 		Move m = move.m;
+		System.out.println(move.toString());
 		this.board = new Board(this.board, m, this.color);
 		return m;
 	}
@@ -53,7 +55,6 @@ public class MachinePlayer extends Player {
 			myBest.score = this.board.eval(side);
 			return myBest;
 		}
-
 		if (side == this.color) {
 			myBest.score = alpha;
 		} else {
@@ -63,6 +64,7 @@ public class MachinePlayer extends Player {
 			for (int j = 0; j < Board.BOARD_SIZE; j++) {
 				Move m = new Move();
 				if (this.board.shouldAdd()) {
+					System.out.println("ADDED");
 					m.moveKind = Move.ADD;
 					m.x1 = i;
 					m.y1 = j;

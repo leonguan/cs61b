@@ -16,6 +16,7 @@ public class Board {
 	}
 
 	public Board(Board b, Move m, int color) {
+		this.array = new Chip[BOARD_SIZE][BOARD_SIZE];
 		for (int i = 0; i < BOARD_SIZE; i++) {
 			for (int j = 0; j < BOARD_SIZE; j++) {
 				this.array[i][j] = b.array[i][j];
@@ -83,25 +84,17 @@ public class Board {
 
 	/**
 	 * Gets chip at position (x,y).
+	 * 
 	 * @param x
 	 * @param y
 	 * @return
 	 */
-	Chip getChip(int x, int y){
+	Chip getChip(int x, int y) {
 		return this.array[x][y];
 	}
-	
-	boolean shouldAdd(){
+
+	boolean shouldAdd() {
 		return this.blackPieces < 10 && this.whitePieces < 10;
-	}
-	/**
-	 * Checks if position at x1,y1 in the board is null. Returns true if null.
-	 * 
-	 * @param m
-	 * @return
-	 */
-	private boolean positionIsNull(Move m) {
-		return this.array[m.x1][m.y1] == null;
 	}
 
 	/**
@@ -112,8 +105,8 @@ public class Board {
 	 * @param m
 	 * @return
 	 */
-	 boolean validMove(Move m, int color) {
-		if (!positionIsNull(m)) {
+	boolean validMove(Move m, int color) {
+		if (!(this.array[m.x1][m.y1] == null)) {
 			return false;
 		}
 		boolean pos1OutBounds = m.x1 < 0 || m.x1 >= BOARD_SIZE || m.y1 < 0
@@ -122,9 +115,16 @@ public class Board {
 				|| (m.x1 == 0 && m.y1 == BOARD_SIZE - 1)
 				|| (m.x1 == BOARD_SIZE - 1 && m.y1 == BOARD_SIZE - 1)
 				|| (m.x1 == BOARD_SIZE - 1 && m.y1 == 0);
-		if (pos1OutBounds || isCorner) {
+		boolean isEdge;
+		if (color == MachinePlayer.BLACK) {
+			isEdge = m.x1 == 0 || m.x1 == Board.BOARD_SIZE - 1;
+		} else {
+			isEdge = m.y1 == 0 || m.y1 == Board.BOARD_SIZE - 1;
+		}
+		if (pos1OutBounds || isCorner || isEdge || connectedChips(m, color)) {
 			return false;
 		}
+
 		if (m.moveKind == Move.STEP) {
 			if (m.x2 < 0 || m.x2 >= BOARD_SIZE || shouldAdd()) {
 				return false;
@@ -133,5 +133,43 @@ public class Board {
 			return shouldAdd();
 		}
 		return true;
+	}
+
+	/***
+	 * Returns true if there are already two chips in a row in the vicinity of a
+	 * move.
+	 * 
+	 * @param m
+	 * @param color
+	 *            - color of the chip that will be placed by Move m.
+	 * @return
+	 */
+	private boolean connectedChips(Move m, int color) {
+		boolean connected = false;
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				if (i == 0 && j == 0) {
+					continue;
+				} else {
+					Chip first = this.array[m.x1 + i][m.x1 + j];
+					if (first != null && first.color == color) {
+						for (int x = 0; x < 2; x++) {
+							for (int y = 0; y < 2; y++) {
+								if (i == 0 && j == 0) {
+									continue;
+								} else {
+									Chip second = this.array[m.x1 + i + x][m.y1
+											+ j + y];
+									if (second != null && second.color == color) {
+										connected = true;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return connected;
 	}
 }
