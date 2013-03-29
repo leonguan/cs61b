@@ -121,7 +121,7 @@ public class Board {
 		} else {
 			isEdge = m.y1 == 0 || m.y1 == Board.BOARD_SIZE - 1;
 		}
-		if (pos1OutBounds || isCorner || isEdge || connectedChips(m, color)) {
+		if (pos1OutBounds || isCorner || isEdge || hasTwoChips(m, color)) {
 			return false;
 		}
 
@@ -144,7 +144,7 @@ public class Board {
 	 *            - color of the chip that will be placed by Move m.
 	 * @return
 	 */
-	private boolean connectedChips(Move m, int color) {
+	private boolean hasTwoChips(Move m, int color) {
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
 				if (i == 0 && j == 0 || m.x1 + i >= BOARD_SIZE || m.x1 + i < 0
