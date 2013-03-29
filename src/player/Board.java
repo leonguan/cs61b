@@ -52,7 +52,8 @@ public class Board {
 			this.array[m.x1][m.y1] = new Chip(m.x1, m.y1, color);
 
 		} else if (m.moveKind == Move.STEP) {
-			if (this.array[m.x2][m.y2]==null || this.array[m.x2][m.y2].color != color) {
+			if (this.array[m.x2][m.y2] == null
+					|| this.array[m.x2][m.y2].color != color) {
 				return false;
 			}
 			this.array[m.x1][m.x1] = new Chip(m.x1, m.y1, color);
@@ -74,11 +75,39 @@ public class Board {
 
 	/**
 	 * Returns true if player with specified color has a valid network.
-	 * 
+	 *  NOTE I THINK IT"S NECESSARY TO IMPLEMENT AN ARRAYLIST FOR THIS METHOD.
 	 * @param color
 	 * @return
 	 */
-	boolean isValidNetwork(int color) {
+	boolean isValidNetwork(int color, boolean chipOnFirstSide,
+			boolean chipOnSecondSide) {
+		boolean hasChipOnFirstSide = chipOnFirstSide;
+		boolean hasChipOnSecondSide = chipOnSecondSide;
+		if (!chipOnFirstSide || !chipOnSecondSide) {
+			if (color == MachinePlayer.BLACK) {
+				for (int i = 1; i < 7; i++) {
+					if (this.array[0][i] != null){
+						hasChipOnFirstSide = true;
+					}
+					if (this.array[7][i] != null){
+						hasChipOnSecondSide = true;
+					}
+				}
+			}
+			else{
+				for (int i = 1; i < 7; i++) {
+					if (this.array[i][0] != null){
+						hasChipOnFirstSide = true;
+					}
+					if (this.array[i][7] != null){
+						hasChipOnSecondSide = true;
+					}
+				}
+			}
+			if (!hasChipOnFirstSide || !hasChipOnSecondSide){
+				return false;
+			}
+		}
 		return false;
 	}
 
@@ -164,9 +193,6 @@ public class Board {
 									Chip second = this.array[m.x1 + i + x][m.y1
 											+ j + y];
 									if (second != null && second.color == color) {
-										System.out.println(first);
-										System.out.println(second);
-										System.out.println();
 										return true;
 									}
 								}

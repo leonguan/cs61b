@@ -43,7 +43,7 @@ public class MachinePlayer extends Player {
 	public Best chooseMove(int side, double alpha, double beta, int depth) {
 		Best myBest = new Best();
 		Best reply;
-		if (this.board.isValidNetwork(side)) {
+		if (this.board.isValidNetwork(side, false, false)) {
 			if (side == this.color) {
 				myBest.score = 1;
 			} else {
