@@ -28,7 +28,7 @@ public class ChipArrayList extends ArrayList {
 				this.arraylist = newArray;
 			}
 		}
-		if (index >= this.size) {
+		if (index > this.size) {
 			throw new IndexOutOfBoundsException();
 		}
 		if (this.arraylist[index] == null) {
@@ -40,6 +40,9 @@ public class ChipArrayList extends ArrayList {
 	public Chip get(int index) {
 		return this.arraylist[index];
 	}
-
+	
+	public int size() {
+		return this.size;
+	}
 
 }
