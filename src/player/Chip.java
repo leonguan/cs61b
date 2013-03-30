@@ -6,7 +6,7 @@ public class Chip {
 	int x;
 	int y;
 	int color;
-	Board board;
+	Board board; // No longer need to store this.
 	
 	// A chip knows about its color, which board it is from, its position, and the existence of
 	// every chip of the same color on the same board.
