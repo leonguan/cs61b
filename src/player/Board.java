@@ -1,18 +1,24 @@
 package player;
 
+import utils.ChipArrayList;
+
 public class Board {
 	final static int BOARD_SIZE = 8;
 	// Don't need anymore because we have chips. Will just set to null
 	// final static int NONE = null;
 
 	private Chip[][] array;
-	private int blackPieces;
-	private int whitePieces;
+	
+	// Changed the representation of simply keeping track of count
+	// To keeping track of the actual pieces on the board
+	// private int blackPieces;
+	private ChipArrayList whitePieces;
+	private ChipArrayList blackPieces;
 
 	public Board() {
 		this.array = new Chip[BOARD_SIZE][BOARD_SIZE];
-		this.blackPieces = 0;
-		this.whitePieces = 0;
+		this.whitePieces = new ChipArrayList();
+		this.blackPieces = new ChipArrayList();
 	}
 
 	public Board(Board b, Move m, int color) {
@@ -44,12 +50,13 @@ public class Board {
 			return false;
 		}
 		if (m.moveKind == Move.ADD) {
-			if (color == MachinePlayer.BLACK) {
-				this.blackPieces += 1;
-			} else {
-				this.whitePieces += 1;
-			}
 			this.array[m.x1][m.y1] = new Chip(m.x1, m.y1, color);
+			if (color == MachinePlayer.BLACK) {
+				this.blackPieces.add(this.array[m.x1][m.y1]);
+			} else {
+				this.whitePieces.add(this.array[m.x1][m.y1]);
+			}
+			
 
 		} else if (m.moveKind == Move.STEP) {
 			if (this.array[m.x2][m.y2] == null
@@ -123,7 +130,7 @@ public class Board {
 	}
 
 	boolean shouldAdd() {
-		return this.blackPieces < 10 || this.whitePieces < 10;
+		return this.blackPieces.size() < 10 || this.whitePieces.size() < 10;
 	}
 
 	/**
