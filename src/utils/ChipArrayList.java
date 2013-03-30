@@ -40,6 +40,9 @@ public class ChipArrayList extends ArrayList {
 	public Chip get(int index) {
 		return this.arraylist[index];
 	}
-
+	
+	public int size() {
+		return this.size;
+	}
 
 }
