@@ -1,13 +1,11 @@
 
 public class ArrayList {
 	private Object[] arraylist;
-	private int arraysize;
 	private int size;
 
 	
 	public ArrayList(int size) {
 		this.arraylist = new Object[size];
-		this.arraysize = size;
 		this.size = 0;
 	}
 	
@@ -20,12 +18,11 @@ public class ArrayList {
 	}
 	
 	public void add(int index, Object object) {
-		if (this.size() == this.arraysize) {
-			Object[] newArray = new Object[this.arraysize * 2];
-			for (int i = 0; i < this.arraysize; i++) {
+		if (this.size() == this.arraylist.length) {
+			Object[] newArray = new Object[this.arraylist.length * 2];
+			for (int i = 0; i < this.arraylist.length; i++) {
 				newArray[i] = this.arraylist[i];
 				this.arraylist = newArray;
-				this.arraysize = this.arraysize * 2;
 			}
 		}
 		if (index >= this.size) {
@@ -50,7 +47,7 @@ public class ArrayList {
 	}
 	
 	public void remove(int index) {
-		if (index > this.arraysize || this.arraylist[index] == null) {
+		if (index > this.arraylist.length || this.arraylist[index] == null) {
 			System.out.println("Nothing at index " + index);
 		}
 		else {
