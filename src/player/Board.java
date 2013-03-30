@@ -51,6 +51,10 @@ public class Board {
 		return this.blackPieces;
 	}
 	
+	Chip[][] board() {
+		return this.array;
+	}
+	
 
 	/**
 	 * Updates the game board if the move is valid.
