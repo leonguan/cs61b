@@ -169,24 +169,11 @@ public class Board {
 		if (!(this.array[m.x1][m.y1] == null)) {
 			return false;
 		}
-		boolean pos1OutBounds = m.x1 < 0 || m.x1 >= BOARD_SIZE || m.y1 < 0
-				|| m.y1 >= BOARD_SIZE;
-		boolean isCorner = (m.x1 == 0 && m.y1 == 0)
-				|| (m.x1 == 0 && m.y1 == BOARD_SIZE - 1)
-				|| (m.x1 == BOARD_SIZE - 1 && m.y1 == BOARD_SIZE - 1)
-				|| (m.x1 == BOARD_SIZE - 1 && m.y1 == 0);
-		boolean isEdge;
-		if (color == MachinePlayer.BLACK) {
-			isEdge = m.x1 == 0 || m.x1 == Board.BOARD_SIZE - 1;
-		} else {
-			isEdge = m.y1 == 0 || m.y1 == Board.BOARD_SIZE - 1;
-		}
-		if (pos1OutBounds || isCorner || isEdge || hasTwoChips(m, color)) {
+		if (!inBounds(m.x1,m.y1,color) || hasTwoChips(m,color)){
 			return false;
 		}
-
 		if (m.moveKind == Move.STEP) {
-			if (m.x2 < 0 || m.x2 >= BOARD_SIZE || shouldAdd()) {
+			if (!inBounds(m.x2,m.y2,color) || shouldAdd()) {
 				return false;
 			}
 		} else if (m.moveKind == Move.ADD) {
@@ -195,6 +182,24 @@ public class Board {
 		return true;
 	}
 
+	private boolean inBounds(int x, int y, int color){
+		boolean pos1OutBounds = x < 0 || x >= BOARD_SIZE || y < 0
+				|| y >= BOARD_SIZE;
+		boolean isCorner = (x == 0 && y == 0)
+				|| (x == 0 && y == BOARD_SIZE - 1)
+				|| (x == BOARD_SIZE - 1 && y == BOARD_SIZE - 1)
+				|| (x == BOARD_SIZE - 1 && y == 0);
+		boolean isEdge;
+		if (color == MachinePlayer.BLACK) {
+			isEdge = x == 0 || x == Board.BOARD_SIZE - 1;
+		} else {
+			isEdge = y == 0 || y == Board.BOARD_SIZE - 1;
+		}
+		if (pos1OutBounds || isCorner || isEdge) {
+			return false;
+		}
+		return true;
+	}
 	/***
 	 * Returns true if there are already two chips in a row in the vicinity of a
 	 * move.
