@@ -20,7 +20,7 @@ Each chip will know which chips it can see, aka which chips it can form a connec
   The methods sameColorChips and otherColorChips return a Chip[] of all the other chips of the designated color on the same board
   The method canSee will take in another chip and return whether or not the current chip can see the other chip on the board and thus can form a connection with it
   
-  A third method, visibleChips will iterate through all of the chips of sameColorChips and use canSee to determine whether or not it can connect with those chips, returning an array of all the chips it can see
+  A third method, visibleChips will iterate through all of the chips of sameColorChips and use canSee to determine whether or not it can connect with those chips, returning an array of all the chips it can see. also, it might save it
   
 I'm guessing another method will randomly form connections in sequence using:
 
