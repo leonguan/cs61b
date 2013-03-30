@@ -20,24 +20,34 @@ public class Board {
 		this.whitePieces = new ChipArrayList();
 		this.blackPieces = new ChipArrayList();
 	}
-
+	
+	// Given a board and a move, produces a new board 
 	public Board(Board b, Move m, int color) {
 		this.array = new Chip[BOARD_SIZE][BOARD_SIZE];
+		
+		// Needs a new ChipArrayList to keep track of the black and white pieces on this board
+		this.whitePieces = new ChipArrayList();
+		this.blackPieces = new ChipArrayList();
 		for (int i = 0; i < BOARD_SIZE; i++) {
 			for (int j = 0; j < BOARD_SIZE; j++) {
-				this.array[i][j] = b.array[i][j];
+				// Each board needs distinctly new Chips, not ones from previous boards
+				this.array[i][j] = new Chip(b.array[i][j].x, b.array[i][j].y, b.array[i][j].color, this);
+				if (this.array[i][j].color == MachinePlayer.BLACK) {
+					this.blackPieces.add(this.array[i][j]);
+				}
+				else {
+					this.whitePieces.add(this.array[i][j]);
+				}
 			}
 		}
-		this.blackPieces = b.blackPieces;
-		this.whitePieces = b.whitePieces;
-		addMove(m, color);
+		this.addMove(m, color);
 	}
 	
-	protected ChipArrayList whitePieces() {
+	ChipArrayList whitePieces() {
 		return this.whitePieces;
 	}
 	
-	protected ChipArrayList blackPieces() {
+	ChipArrayList blackPieces() {
 		return this.blackPieces;
 	}
 	
@@ -72,7 +82,8 @@ public class Board {
 					|| this.array[m.x2][m.y2].color != color) {
 				return false;
 			}
-			this.array[m.x1][m.x1] = new Chip(m.x1, m.y1, color, this);
+			// Does this work?
+			this.array[m.x1][m.x1] = this.array[m.x2][m.y2];
 			this.array[m.x2][m.y2] = null;
 		}
 		return true;
