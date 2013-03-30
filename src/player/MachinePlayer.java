@@ -71,18 +71,14 @@ public class MachinePlayer extends Player {
 				} else {
 					System.out.println("step");
 					m.moveKind = Move.STEP;
-					for (int x = 0; x < Board.BOARD_SIZE; x++) {
-						for (int y = 0; y < Board.BOARD_SIZE; y++) {
-							m.x2 = x;
-							m.y2 = y;
-						}
-					}
+					m.x2 = i;
+					m.y2 = j;
 				}
 
 				if (this.board.validMove(m, side)) {
 					Board currBoard = this.board;
 					Board afterMove = new Board(this.board, m, side);
-					System.out.println("asdf: "+ afterMove);
+					System.out.println("asdf: " + afterMove);
 					this.board = afterMove;
 					reply = chooseMove((side + 1) % 2, alpha, beta, depth - 1);
 					this.board = currBoard;

@@ -8,7 +8,7 @@ public class Board {
 	// final static int NONE = null;
 
 	private Chip[][] array;
-	
+
 	// Changed the representation of simply keeping track of count
 	// To keeping track of the actual pieces on the board
 	// private int blackPieces;
@@ -20,47 +20,47 @@ public class Board {
 		this.whitePieces = new ChipArrayList();
 		this.blackPieces = new ChipArrayList();
 	}
-	
-	// Given a board and a move, produces a new board 
+
+	// Given a board and a move, produces a new board
 	public Board(Board b, Move m, int color) {
 		this.array = new Chip[BOARD_SIZE][BOARD_SIZE];
-		
-		// Needs a new ChipArrayList to keep track of the black and white pieces on this board
+
+		// Needs a new ChipArrayList to keep track of the black and white pieces
+		// on this board
 		this.whitePieces = new ChipArrayList();
 		this.blackPieces = new ChipArrayList();
 		for (int i = 0; i < BOARD_SIZE; i++) {
 			for (int j = 0; j < BOARD_SIZE; j++) {
-				// Each board needs distinctly new Chips, not ones from previous boards
+				// Each board needs distinctly new Chips, not ones from previous
+				// boards
 				Chip bChip = b.array[i][j];
-				if (bChip!=null){
-					this.array[i][j] = new Chip(bChip.x, bChip.y, bChip.color, this);
+				if (bChip != null) {
+					this.array[i][j] = new Chip(bChip.x, bChip.y, bChip.color,
+							this);
 					if (this.array[i][j].color == MachinePlayer.BLACK) {
 						this.blackPieces.add(this.array[i][j]);
-					}
-					else {
+					} else {
 						this.whitePieces.add(this.array[i][j]);
 					}
-				}
-				else{
+				} else {
 					this.array[i][j] = null;
 				}
 			}
 		}
 		this.addMove(m, color);
 	}
-	
+
 	ChipArrayList whitePieces() {
 		return this.whitePieces;
 	}
-	
+
 	ChipArrayList blackPieces() {
 		return this.blackPieces;
 	}
-	
+
 	Chip[][] board() {
 		return this.array;
 	}
-	
 
 	/**
 	 * Updates the game board if the move is valid.
@@ -85,7 +85,6 @@ public class Board {
 			} else {
 				this.whitePieces.add(this.array[m.x1][m.y1]);
 			}
-			
 
 		} else if (m.moveKind == Move.STEP) {
 			if (this.array[m.x2][m.y2] == null
@@ -111,8 +110,9 @@ public class Board {
 	}
 
 	/**
-	 * Returns true if player with specified color has a valid network.
-	 *  NOTE I THINK IT"S NECESSARY TO IMPLEMENT AN ARRAYLIST FOR THIS METHOD.
+	 * Returns true if player with specified color has a valid network. NOTE I
+	 * THINK IT"S NECESSARY TO IMPLEMENT AN ARRAYLIST FOR THIS METHOD.
+	 * 
 	 * @param color
 	 * @return
 	 */
@@ -123,25 +123,24 @@ public class Board {
 		if (!chipOnFirstSide || !chipOnSecondSide) {
 			if (color == MachinePlayer.BLACK) {
 				for (int i = 1; i < 7; i++) {
-					if (this.array[0][i] != null){
+					if (this.array[0][i] != null) {
 						hasChipOnFirstSide = true;
 					}
-					if (this.array[7][i] != null){
+					if (this.array[7][i] != null) {
 						hasChipOnSecondSide = true;
 					}
 				}
-			}
-			else{
+			} else {
 				for (int i = 1; i < 7; i++) {
-					if (this.array[i][0] != null){
+					if (this.array[i][0] != null) {
 						hasChipOnFirstSide = true;
 					}
-					if (this.array[i][7] != null){
+					if (this.array[i][7] != null) {
 						hasChipOnSecondSide = true;
 					}
 				}
 			}
-			if (!hasChipOnFirstSide || !hasChipOnSecondSide){
+			if (!hasChipOnFirstSide || !hasChipOnSecondSide) {
 				return false;
 			}
 		}
@@ -160,7 +159,6 @@ public class Board {
 	}
 
 	boolean shouldAdd() {
-		System.out.println("Black Pieces: " + blackPieces.size() + " WHITE PIECES: "+ whitePieces.size());
 		return this.blackPieces.size() < 10 || this.whitePieces.size() < 10;
 	}
 
@@ -176,11 +174,12 @@ public class Board {
 		if (!(this.array[m.x1][m.y1] == null)) {
 			return false;
 		}
-		if (!inBounds(m.x1,m.y1,color) || hasTwoChips(m,color)){
+		if (!inBounds(m.x1, m.y1, color) || hasTwoChips(m, color)) {
 			return false;
 		}
 		if (m.moveKind == Move.STEP) {
-			if (!inBounds(m.x2,m.y2,color) || shouldAdd()) {
+			boolean posDidNotChange = m.x2 == m.x1 && m.y1 == m.y2;
+			if (posDidNotChange || !inBounds(m.x2, m.y2, color) || shouldAdd()) {
 				return false;
 			}
 		} else if (m.moveKind == Move.ADD) {
@@ -189,7 +188,7 @@ public class Board {
 		return true;
 	}
 
-	private boolean inBounds(int x, int y, int color){
+	private boolean inBounds(int x, int y, int color) {
 		boolean pos1OutBounds = x < 0 || x >= BOARD_SIZE || y < 0
 				|| y >= BOARD_SIZE;
 		boolean isCorner = (x == 0 && y == 0)
@@ -207,6 +206,7 @@ public class Board {
 		}
 		return true;
 	}
+
 	/***
 	 * Returns true if there are already two chips in a row in the vicinity of a
 	 * move.
