@@ -1,5 +1,7 @@
 package player;
 
+import java.util.ArrayList;
+
 public class Best {
 	double score;
 	Move m;

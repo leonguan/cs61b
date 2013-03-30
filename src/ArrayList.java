@@ -20,13 +20,16 @@ public class ArrayList {
 	}
 	
 	public void add(int index, Object object) {
-		if (this.size() == this.arraysize || index > this.arraysize) {
+		if (this.size() == this.arraysize) {
 			Object[] newArray = new Object[this.arraysize * 2];
 			for (int i = 0; i < this.arraysize; i++) {
 				newArray[i] = this.arraylist[i];
 				this.arraylist = newArray;
 				this.arraysize = this.arraysize * 2;
 			}
+		}
+		if (index >= this.size) {
+			throw new IndexOutOfBoundsException();
 		}
 		if (this.arraylist[index] == null) {
 			this.size++;
@@ -54,11 +57,5 @@ public class ArrayList {
 			this.arraylist[index] = null;
 			this.size--;
 		}
-	}
-	
-	public static void main(String[] args) {
-		ArrayList somethign = new ArrayList();
-		somethign.add(3, "hello");
-		System.out.println(somethign.get(3));
 	}
 }
