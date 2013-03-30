@@ -46,3 +46,6 @@ A chip now keeps track of every chip in every direction:
   We also look in the cardinal directions before a STEP move to see if the chip had been blocking anything and make minor changes to those (aka ocnnecting the chips)
   
   This way, we massively reduce the number of calculations we have to do.
+  
+  
+  explanation: https://github.com/zeyuliu/cs61b/commit/7319ea3d59bee59093a8c946d75400bf15551f36
