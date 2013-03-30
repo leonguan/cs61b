@@ -31,12 +31,18 @@ public class Board {
 		for (int i = 0; i < BOARD_SIZE; i++) {
 			for (int j = 0; j < BOARD_SIZE; j++) {
 				// Each board needs distinctly new Chips, not ones from previous boards
-				this.array[i][j] = new Chip(b.array[i][j].x, b.array[i][j].y, b.array[i][j].color, this);
-				if (this.array[i][j].color == MachinePlayer.BLACK) {
-					this.blackPieces.add(this.array[i][j]);
+				Chip bChip = b.array[i][j];
+				if (bChip!=null){
+					this.array[i][j] = new Chip(bChip.x, bChip.y, bChip.color, this);
+					if (this.array[i][j].color == MachinePlayer.BLACK) {
+						this.blackPieces.add(this.array[i][j]);
+					}
+					else {
+						this.whitePieces.add(this.array[i][j]);
+					}
 				}
-				else {
-					this.whitePieces.add(this.array[i][j]);
+				else{
+					this.array[i][j] = null;
 				}
 			}
 		}
@@ -154,6 +160,7 @@ public class Board {
 	}
 
 	boolean shouldAdd() {
+		System.out.println("Black Pieces: " + blackPieces.size() + " WHITE PIECES: "+ whitePieces.size());
 		return this.blackPieces.size() < 10 || this.whitePieces.size() < 10;
 	}
 

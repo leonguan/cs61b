@@ -82,6 +82,7 @@ public class MachinePlayer extends Player {
 				if (this.board.validMove(m, side)) {
 					Board currBoard = this.board;
 					Board afterMove = new Board(this.board, m, side);
+					System.out.println("asdf: "+ afterMove);
 					this.board = afterMove;
 					reply = chooseMove((side + 1) % 2, alpha, beta, depth - 1);
 					this.board = currBoard;
