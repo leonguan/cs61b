@@ -32,6 +32,15 @@ public class Board {
 		this.whitePieces = b.whitePieces;
 		addMove(m, color);
 	}
+	
+	protected ChipArrayList whitePieces() {
+		return this.whitePieces;
+	}
+	
+	protected ChipArrayList blackPieces() {
+		return this.blackPieces;
+	}
+	
 
 	/**
 	 * Updates the game board if the move is valid.
@@ -50,7 +59,7 @@ public class Board {
 			return false;
 		}
 		if (m.moveKind == Move.ADD) {
-			this.array[m.x1][m.y1] = new Chip(m.x1, m.y1, color);
+			this.array[m.x1][m.y1] = new Chip(m.x1, m.y1, color, this);
 			if (color == MachinePlayer.BLACK) {
 				this.blackPieces.add(this.array[m.x1][m.y1]);
 			} else {
@@ -63,7 +72,7 @@ public class Board {
 					|| this.array[m.x2][m.y2].color != color) {
 				return false;
 			}
-			this.array[m.x1][m.x1] = new Chip(m.x1, m.y1, color);
+			this.array[m.x1][m.x1] = new Chip(m.x1, m.y1, color, this);
 			this.array[m.x2][m.y2] = null;
 		}
 		return true;
