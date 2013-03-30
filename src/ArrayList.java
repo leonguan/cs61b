@@ -1,32 +1,37 @@
 
 public class ArrayList {
 	private Object[] arraylist;
-	private int indexOfLast;
 	private int arraysize;
+	private int size;
+
 	
-	public ArrayList(Object object) {
-		this(object, 10);
+	public ArrayList(int size) {
+		this.arraylist = new Object[size];
+		this.arraysize = size;
+		this.size = 0;
 	}
 	
-	public ArrayList(Object object, int size) {
-		this.arraylist = new Object[size];
-		this.indexOfLast = 0;
-		this.arraysize = size;
+	public ArrayList() {
+		this(10);
 	}
 	
 	public void add(Object object) {
-		this.add(this.indexOfLast, object);
+		this.add(this.size(), object);
 	}
 	
 	public void add(int index, Object object) {
-		if (this.indexOfLast == this.arraysize - 1) {
+		if (this.size() == this.arraysize || index > this.arraysize) {
 			Object[] newArray = new Object[this.arraysize * 2];
 			for (int i = 0; i < this.arraysize; i++) {
 				newArray[i] = this.arraylist[i];
+				this.arraylist = newArray;
+				this.arraysize = this.arraysize * 2;
 			}
 		}
+		if (this.arraylist[index] == null) {
+			this.size++;
+		}
 		this.arraylist[index] = object;
-		this.indexOfLast++;
 	}
 	
 	public Object get(int index) {
@@ -38,10 +43,22 @@ public class ArrayList {
 	}
 	
 	public int size() {
-		return this.indexOfLast;
+		return this.size;
 	}
 	
 	public void remove(int index) {
-		
+		if (index > this.arraysize || this.arraylist[index] == null) {
+			System.out.println("Nothing at index " + index);
+		}
+		else {
+			this.arraylist[index] = null;
+			this.size--;
+		}
+	}
+	
+	public static void main(String[] args) {
+		ArrayList somethign = new ArrayList();
+		somethign.add(3, "hello");
+		System.out.println(somethign.get(3));
 	}
 }
