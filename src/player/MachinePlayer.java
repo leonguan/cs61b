@@ -2,6 +2,9 @@
 
 package player;
 
+import utils.ChipArrayList;
+import utils.MoveArrayList;
+
 /**
  * An implementation of an automatic Network player. Keeps track of moves made
  * by both players. Can select a move for itself.
@@ -60,46 +63,38 @@ public class MachinePlayer extends Player {
 		} else {
 			myBest.score = beta;
 		}
-		for (int i = 0; i < Board.BOARD_SIZE; i++) {
-			for (int j = 0; j < Board.BOARD_SIZE; j++) {
-				Move m = new Move();
-				m.x1 = i;
-				m.y1 = j;
-				if (this.board.shouldAdd()) {
-					System.out.println("Add");
-					m.moveKind = Move.ADD;
-				} else {
-					System.out.println("step");
-					m.moveKind = Move.STEP;
-					m.x2 = i;
-					m.y2 = j;
-				}
 
-				if (this.board.validMove(m, side)) {
-					Board currBoard = this.board;
-					Board afterMove = new Board(this.board, m, side);
-					System.out.println("asdf: " + afterMove);
-					this.board = afterMove;
-					reply = chooseMove((side + 1) % 2, alpha, beta, depth - 1);
-					this.board = currBoard;
-					if (side == this.color && (reply.score > myBest.score)) {
-						myBest.m = m;
-						myBest.score = reply.score;
-						alpha = reply.score;
-					} else if (side == (this.color + 1) % 2
-							&& (reply.score <= myBest.score)) {
-						myBest.m = m;
-						myBest.score = reply.score;
-						beta = reply.score;
-					}
-				} else {
-					continue;
+		MoveArrayList moves = this.getMoves(side);
+		int i = 0;
+		while (i < moves.size()) {
+			Move m = moves.get(i);
+			System.out.println(m);
+			if (this.board.validMove(m, side)) {
+				Board currBoard = this.board;
+				Board afterMove = new Board(this.board, m, side);
+				System.out.println("asdf: " + afterMove);
+				this.board = afterMove;
+				reply = chooseMove((side + 1) % 2, alpha, beta, depth - 1);
+				this.board = currBoard;
+				if (side == this.color && (reply.score > myBest.score)) {
+					myBest.m = m;
+					myBest.score = reply.score;
+					alpha = reply.score;
+				} else if (side == (this.color + 1) % 2
+						&& (reply.score <= myBest.score)) {
+					myBest.m = m;
+					myBest.score = reply.score;
+					beta = reply.score;
 				}
-
-				if (alpha >= beta) {
-					return myBest;
-				}
+			} else {
+				i++;
+				continue;
 			}
+
+			if (alpha >= beta) {
+				return myBest;
+			}
+			i++;
 		}
 		return myBest;
 	}
@@ -122,4 +117,48 @@ public class MachinePlayer extends Player {
 		return this.board.addMove(m, this.color);
 	}
 
+	private MoveArrayList getMoves(int side) {
+		MoveArrayList list = new MoveArrayList();
+		for (int i = 0; i < Board.BOARD_SIZE; i++) {
+			for (int j = 0; j < Board.BOARD_SIZE; j++) {
+				if (this.board.shouldAdd()) {
+					System.out.println("Add");
+					Move m = new Move();
+					m.x1 = i;
+					m.y1 = j;
+					m.moveKind = Move.ADD;
+					System.out.println(m);
+					list.add(m);
+				} else {
+					System.out.println("step");
+					int iter = 0;
+					ChipArrayList chips = null;
+					if (side == MachinePlayer.BLACK) {
+						chips = this.board.blackPieces();
+					} else {
+						chips = this.board.whitePieces();
+					}
+					while (iter < chips.size()) {
+						Chip temp = chips.get(iter);
+						Move m = new Move();
+						m.x1 = i;
+						m.y1 = j;
+						m.moveKind = Move.STEP;
+						m.x2 = temp.x;
+						m.y2 = temp.y;
+						list.add(m);
+						iter++;
+					}
+
+				}
+			}
+		}
+
+		int temp = 0;
+		while (temp < list.size()){
+			System.out.println(list.get(temp));
+			temp++;
+		}
+		return list;
+	}
 }

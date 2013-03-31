@@ -29,4 +29,23 @@ I'm guessing another method will randomly form connections in sequence using:
   does not stop until it hits a goal
   chooses not to go towards a goal unless it's length is already >= 5
   returns false if no more possible choices
+
+
+-----
+Changing code bc Matt had a good idea:
+
+A chip now keeps track of every chip in every direction:
+
+  Aka, it will keep track of everything N, NE, E, SE, S, SW, W, NW
   
+  Now, networks are calculated every single time a chip is placed or moved (add or step move).
+  However, now, when we calculate networks the following are different:
+  Before, when we calculated a network, we would recalculate which chips EACH chip could see. (AKA call visibleChips on each chip each turn)
+  Now, which chips a chip can see persists between turns.
+  We now only call visible chips on a chip that is placed or moved to a new location and minor changes to the chips it now blocks.
+  We also look in the cardinal directions before a STEP move to see if the chip had been blocking anything and make minor changes to those (aka ocnnecting the chips)
+  
+  This way, we massively reduce the number of calculations we have to do.
+  
+  
+  explanation: https://github.com/zeyuliu/cs61b/commit/7319ea3d59bee59093a8c946d75400bf15551f36

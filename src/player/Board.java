@@ -91,7 +91,8 @@ public class Board {
 					|| this.array[m.x2][m.y2].color != color) {
 				return false;
 			}
-			// Does this work?
+			// Does this work? 
+			// For step moves, we should split this into a removeChip and then call addChip on it
 			this.array[m.x1][m.x1] = this.array[m.x2][m.y2];
 			this.array[m.x2][m.y2] = null;
 		}
