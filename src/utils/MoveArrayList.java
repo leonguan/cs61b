@@ -1,48 +1,46 @@
 package utils;
-import player.Chip;
+import player.Move;
 
-
-public class ChipArrayList extends ArrayList {
-	private Chip[] arraylist;
+public class MoveArrayList extends ArrayList {
+	private Move[] arraylist;
 	private int size;
 
-	
-	public ChipArrayList(int size) {
-		this.arraylist = new Chip[size];
+	public MoveArrayList(int size) {
+		this.arraylist = new Move[size];
 		this.size = 0;
 	}
-	
-	public ChipArrayList() {
+
+	public MoveArrayList() {
 		this(10);
 	}
-	
-	public void add(Chip chip) {
-		this.add(this.size(), chip);
+
+	public void add(Move m) {
+		this.add(this.size(), m);
 	}
-	
-	public void add(int index, Chip chip) {
+
+	public void add(int index, Move m) {
 		if (this.size() == this.arraylist.length) {
-			Chip[] newArray = new Chip[this.arraylist.length * 2];
+			Move[] newArray = new Move[this.arraylist.length * 2];
 			for (int i = 0; i < this.arraylist.length; i++) {
 				newArray[i] = this.arraylist[i];
 			}
 			this.arraylist = newArray;
 		}
+		
 		if (index > this.size) {
 			throw new IndexOutOfBoundsException();
 		}
 		if (this.arraylist[index] == null) {
 			this.size++;
 		}
-		this.arraylist[index] = chip;
+		this.arraylist[index] = m;
 	}
-	
-	public Chip get(int index) {
+
+	public Move get(int index) {
 		return this.arraylist[index];
 	}
-	
+
 	public int size() {
 		return this.size;
 	}
-
 }

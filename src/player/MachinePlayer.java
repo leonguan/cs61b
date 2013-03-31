@@ -15,6 +15,7 @@ public class MachinePlayer extends Player {
 	private int color;
 	private int searchDepth;
 	private Board board;
+	private int turn = 1;
 
 	// Creates a machine player with the given color. Color is either 0 (black)
 	// or 1 (white). (White has the first move.)
@@ -36,26 +37,28 @@ public class MachinePlayer extends Player {
 	// the internal game board) as a move by "this" player.
 	public Move chooseMove() {
 		// TODO update gameBoard & make move.
-		Best move = chooseMove(this.color, -1, 1, this.searchDepth);
+		Best move = chooseMove(this.turn, -1, 1, this.searchDepth);
 		Move m = move.m;
-		System.out.println(move.toString());
-		this.board = new Board(this.board, m, this.color);
+		this.board = new Board(this.board, m, this.turn);
+		this.turn++;
 		return m;
 	}
 
-	public Best chooseMove(int side, double alpha, double beta, int depth) {
+	public Best chooseMove(int turn, double alpha, double beta, int depth) {
 		Best myBest = new Best();
 		Best reply;
-		if (this.board.isValidNetwork(side, false, false)) {
+		int side = turn % 2;
+		if (this.board.isValidNetwork(turn, false, false)) {
 			if (side == this.color) {
-				myBest.score = 1;
+				myBest.score = 100;
 			} else {
-				myBest.score = -1;
+				myBest.score = -100;
 			}
 			return myBest;
 		}
 		if (depth == 0) {
 			myBest.score = this.board.eval(side);
+			System.out.println("SCORE: " + myBest.score);
 			return myBest;
 		}
 		if (side == this.color) {
@@ -68,13 +71,11 @@ public class MachinePlayer extends Player {
 		int i = 0;
 		while (i < moves.size()) {
 			Move m = moves.get(i);
-			System.out.println(m);
-			if (this.board.validMove(m, side)) {
+			if (this.board.validMove(m, turn)) {
 				Board currBoard = this.board;
-				Board afterMove = new Board(this.board, m, side);
-				System.out.println("asdf: " + afterMove);
+				Board afterMove = new Board(this.board, m, turn);
 				this.board = afterMove;
-				reply = chooseMove((side + 1) % 2, alpha, beta, depth - 1);
+				reply = chooseMove(turn + 1, alpha, beta, depth - 1);
 				this.board = currBoard;
 				if (side == this.color && (reply.score > myBest.score)) {
 					myBest.m = m;
@@ -105,7 +106,11 @@ public class MachinePlayer extends Player {
 	// player. This method allows your opponents to inform you of their moves.
 	public boolean opponentMove(Move m) {
 		int oppColor = (this.color + 1) % 2;
-		return this.board.addMove(m, oppColor);
+		boolean b = this.board.addMove(m, oppColor);
+
+		this.turn++;
+
+		return b;
 	}
 
 	// If the Move m is legal, records the move as a move by "this" player
@@ -121,25 +126,24 @@ public class MachinePlayer extends Player {
 		MoveArrayList list = new MoveArrayList();
 		for (int i = 0; i < Board.BOARD_SIZE; i++) {
 			for (int j = 0; j < Board.BOARD_SIZE; j++) {
-				if (this.board.shouldAdd()) {
+				if (this.board.shouldAdd(this.turn)) {
 					System.out.println("Add");
 					Move m = new Move();
 					m.x1 = i;
 					m.y1 = j;
 					m.moveKind = Move.ADD;
-					System.out.println(m);
 					list.add(m);
 				} else {
 					System.out.println("step");
-					int iter = 0;
-					ChipArrayList chips = null;
-					if (side == MachinePlayer.BLACK) {
-						chips = this.board.blackPieces();
-					} else {
-						chips = this.board.whitePieces();
-					}
-					while (iter < chips.size()) {
-						Chip temp = chips.get(iter);
+					int iter = side;
+					/**
+					 * if (side == MachinePlayer.BLACK) { chips =
+					 * this.board.blackPieces(); } else { chips =
+					 * this.board.whitePieces(); }
+					 */
+					while (iter < this.board.getTotalChips()) {
+						Chip temp = this.board.getChip((iter + 1) % 2); // TODO
+																		// SKETCH
 						Move m = new Move();
 						m.x1 = i;
 						m.y1 = j;
@@ -155,10 +159,6 @@ public class MachinePlayer extends Player {
 		}
 
 		int temp = 0;
-		while (temp < list.size()){
-			System.out.println(list.get(temp));
-			temp++;
-		}
 		return list;
 	}
 }
