@@ -91,7 +91,8 @@ public class Board {
 			// this);
 			this.boardLocations[m.x1][m.y1] = turn;
 			this.chips[turn] = new Chip(m.x1, m.y1, turn % 2, this);
-			System.out.println("right");
+			System.out.println(this.chips[turn]);
+			System.out.println();
 
 			/**
 			 * if (color == MachinePlayer.BLACK) {
