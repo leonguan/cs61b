@@ -2,7 +2,6 @@
 
 package player;
 
-import utils.ChipArrayList;
 import utils.MoveArrayList;
 
 /**

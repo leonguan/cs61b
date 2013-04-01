@@ -38,6 +38,7 @@ public class Board {
 				this.chips[i] = new Chip(b.chips[i]);
 			}
 		}
+		
 		this.addMove(m, turn);
 	}
 

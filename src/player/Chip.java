@@ -106,6 +106,7 @@ public class Chip {
 				int tempChip = board.getChipNumber(x + dx * i, y + dy * i);
 				if (tempChip != 0) {
 					this.connections[d.getIndex()] = tempChip;
+					stepChip(x+dx*i, y+dy*i, board);
 					outOfBounds = false;
 					break;
 				}
