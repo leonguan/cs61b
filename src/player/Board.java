@@ -92,6 +92,13 @@ public class Board {
 			this.boardLocations[m.x1][m.y1] = turn;
 			this.chips[turn] = new Chip(m.x1, m.y1, turn % 2, this);
 			System.out.println(this.chips[turn]);
+			System.out.println("TEST");
+			for (int i = 0; i < this.getChip(1).connections.length; i++) {
+				if (this.getChip(1).connections[i] != 0) {
+					System.out.println("INDEX: " + i + " CONNECTION: "
+							+ this.getChip(1).connections[i]);
+				}
+			}
 			System.out.println();
 
 			/**
