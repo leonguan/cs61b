@@ -100,7 +100,7 @@ public class Board {
 			 */
 		} else if (m.moveKind == Move.STEP) {
 			if (this.boardLocations[m.x2][m.y2] == 0
-					|| this.chips[this.boardLocations[m.x2][m.y2]].color != turn % 2) {
+					|| this.chips[this.boardLocations[m.x2][m.y2]].getColor() != turn % 2) {
 				return false;
 			}
 			int chipNum = this.getChipNumber(m.x2, m.y2);
@@ -186,54 +186,45 @@ public class Board {
 	 * @param color
 	 * @return
 	 */
-	boolean isValidNetwork(int turn, boolean chipOnFirstSide,
-			boolean chipOnSecondSide) {
-		boolean hasChipOnFirstSide = chipOnFirstSide;
-		boolean hasChipOnSecondSide = chipOnSecondSide;
-		int color = turn % 2;
-		if (turn < 11) {
+	boolean isValidNetwork(int color, int length, int prevDir, Chip currChip) {
+		if (currChip == null || currChip.getColor() != color) {
 			return false;
 		}
-		if (!chipOnFirstSide || !chipOnSecondSide) {
-			if (color == MachinePlayer.BLACK) {
-				for (int i = 1; i < 7; i++) {
-					if (this.boardLocations[0][i] != 0) {
-						hasChipOnFirstSide = true;
-					}
-					if (this.boardLocations[7][i] != 0) {
-						hasChipOnSecondSide = true;
-					}
-				}
-			} else {
-				for (int i = 1; i < 7; i++) {
-					if (this.boardLocations[i][0] != 0) {
-						hasChipOnFirstSide = true;
-					}
-					if (this.boardLocations[i][7] != 0) {
-						hasChipOnSecondSide = true;
-					}
-				}
-			}
-			if (!hasChipOnFirstSide || !hasChipOnSecondSide) {
+		if (currChip.getX() == 7 || currChip.getY() == 7) {
+			System.out.println("AT END GOAL, LENGTH: " + length);
+			if (length < 6){
 				return false;
 			}
+			return true;
 		}
-		IntegerArrayList visitList = new IntegerArrayList();
-		for (int i = 1; i < 7; i++) {
-			if (color == MachinePlayer.WHITE) {
-				if (boardLocations[0][i] != 0) {
-					if (dfs(boardLocations[0][i], visitList, -1)) {
-						return true;
-					}
-				}
-			} else {
-				if (boardLocations[i][0] != 0) {
-					if (dfs(boardLocations[i][0], visitList, -1)) {
-						return true;
-					}
-				}
+		for (Direction d : Direction.values()) {
+			if (d.getIndex() == (prevDir + 4) % 8) {
+				continue;
 			}
+			int neighborChipIndex = currChip.getConnection(d.getIndex());
+
+			boolean valid = isValidNetwork(color, length+1, d.getIndex(), this.getChip(neighborChipIndex));
+			if (valid){
+				return true;
+			}
+
 		}
+		// IntegerArrayList visitList = new IntegerArrayList();
+		// for (int i = 1; i < 7; i++) {
+		// if (color == MachinePlayer.WHITE) {
+		// if (boardLocations[0][i] != 0) {
+		// if (dfs(boardLocations[0][i], visitList, -1)) {
+		// return true;
+		// }
+		// }
+		// } else {
+		// if (boardLocations[i][0] != 0) {
+		// if (dfs(boardLocations[i][0], visitList, -1)) {
+		// return true;
+		// }
+		// }
+		// }
+		// }
 		return false;
 	}
 
@@ -241,35 +232,35 @@ public class Board {
 	 * current visited lastDirection
 	 * 
 	 */
-	public boolean dfs(int current, IntegerArrayList chippy, int direction) {
-		Chip cur = getChip(current);
-		if (cur.getX() == 7 || cur.getY() == 7) {
-			if (chippy.size() >= 6) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		if (cur.getX() == 0 || cur.getY() == 0) {
-			return false;
-		}
-		int nextNode;
-		chippy.add(new Integer(current));
-		for (int i = 0; i < 8; i++) {
-			if (i == direction) {
-				continue;
-			}
-			nextNode = cur.getConnection(i);
-			if (nextNode != 0 && current % 2 != nextNode % 2
-					&& !chippy.contains(nextNode)) {
-				if (dfs(nextNode, chippy, i)) {
-					return true;
-				}
-			}
-		}
-		chippy.remove(current);
-		return false;
-	}
+	// public boolean dfs(int current, IntegerArrayList chippy, int direction) {
+	// Chip cur = getChip(current);
+	// if (cur.getX() == 7 || cur.getY() == 7) {
+	// if (chippy.size() >= 6) {
+	// return true;
+	// } else {
+	// return false;
+	// }
+	// }
+	// if (cur.getX() == 0 || cur.getY() == 0) {
+	// return false;
+	// }
+	// int nextNode;
+	// chippy.add(new Integer(current));
+	// for (int i = 0; i < 8; i++) {
+	// if (i == direction) {
+	// continue;
+	// }
+	// nextNode = cur.getConnection(i);
+	// if (nextNode != 0 && current % 2 != nextNode % 2
+	// && !chippy.contains(nextNode)) {
+	// if (dfs(nextNode, chippy, i)) {
+	// return true;
+	// }
+	// }
+	// }
+	// chippy.remove(current);
+	// return false;
+	// }
 
 	/**
 	 * Gets chip at position (x,y).
@@ -338,6 +329,32 @@ public class Board {
 		return pos1OutBounds || isCorner;
 	}
 
+	boolean hasChipsInBothGoals(int color) {
+		boolean hasChipOnFirstSide = false;
+		boolean hasChipOnSecondSide = false;
+		if (color == MachinePlayer.BLACK) {
+			for (int i = 1; i < 7; i++) {
+				if (this.boardLocations[0][i] != 0) {
+					System.out.println("HAS CHIP FIRST SIDE");
+					hasChipOnFirstSide = true;
+				}
+				if (this.boardLocations[7][i] != 0) {
+					hasChipOnSecondSide = true;
+				}
+			}
+		} else {
+			for (int i = 1; i < 7; i++) {
+				if (this.boardLocations[i][0] != 0) {
+					hasChipOnFirstSide = true;
+				}
+				if (this.boardLocations[i][7] != 0) {
+					hasChipOnSecondSide = true;
+				}
+			}
+		}
+		return hasChipOnFirstSide && hasChipOnSecondSide;
+	}
+
 	/***
 	 * Returns true if there are already two chips in a row in the vicinity of a
 	 * move.
@@ -363,7 +380,7 @@ public class Board {
 				} else {
 					int first = this.boardLocations[m.x1 + i][m.y1 + j];
 					if (first != 0 && first % 2 == color) {
-						numSurrounding+=1;
+						numSurrounding += 1;
 						if (numSurrounding >= 2) {
 							if (m.moveKind == Move.STEP) {
 								this.boardLocations[m.x2][m.y2] = stepCurrLoc;

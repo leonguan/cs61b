@@ -21,7 +21,7 @@ public class MachinePlayer extends Player {
 	public MachinePlayer(int color) {
 		this.color = color;
 		this.board = new Board();
-		this.searchDepth = 1;
+		this.searchDepth = 3;
 	}
 
 	// Creates a machine player with the given color and search depth. Color is
@@ -39,7 +39,7 @@ public class MachinePlayer extends Player {
 		Best move = chooseMove(this.turn, -10000, 10000, this.searchDepth);
 		Move m = move.m;
 		this.board = new Board(this.board, m, this.turn);
-		System.out.println("COMPUTER: " + board.eval(this.color));
+		System.out.println("COMPUTER Score: " + board.eval(this.color));
 		for (int i = 0; i < 8; i++) {
 			if (this.board.getChip(1).getConnection(i) != 0) {
 				System.out.println("NEW CHIP: INDEX: " + i + " CONNECTION: "
@@ -54,16 +54,32 @@ public class MachinePlayer extends Player {
 		Best myBest = new Best();
 		Best reply;
 		int side = turn % 2;
-		if (this.board.isValidNetwork(turn, false, false)) {
-			if (side == this.color) {
-				System.out.println("WIN");
-				myBest.score = 1000;
-			} else {
-				System.out.println("LOSE");
-				myBest.score = -1000;
+		int chipIndex;
+		if (side == MachinePlayer.BLACK) {
+			chipIndex = 2;
+		} else {
+			chipIndex = 1;
+		}
+		if (turn >= 11 && this.board.hasChipsInBothGoals(side)) {
+			while (chipIndex < 21) {
+				Chip currChip = this.board.getChip(chipIndex);
+				if (currChip!= null && (currChip.getX() == 0 || currChip.getY() == 0)) {
+					System.out.println("CHECK VALID NETWORK FOR SIDE: "+ side);
+					if (this.board.isValidNetwork(side, 0, -1, currChip)){
+						System.out.println("SOMEONE HAS VALID");
+						if (side == this.color) {
+							System.out.println("WIN");
+							myBest.score = 1000;
+						} else {
+							System.out.println("LOSE");
+							myBest.score = -1000;
+						}
+						return myBest;
+					}
+				}
+				chipIndex += 2;
+				
 			}
-			System.out.println(myBest);
-			return myBest;
 		}
 		if (depth == 0) {
 			myBest.score = this.board.eval(this.color);
@@ -154,8 +170,8 @@ public class MachinePlayer extends Player {
 						m.x1 = i;
 						m.y1 = j;
 						m.moveKind = Move.STEP;
-						m.x2 = temp.x;
-						m.y2 = temp.y;
+						m.x2 = temp.getX();
+						m.y2 = temp.getY();
 						list.add(m);
 						iter += 2;
 					}
