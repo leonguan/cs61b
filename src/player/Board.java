@@ -94,15 +94,15 @@ public class Board {
 			// this);
 			this.boardLocations[m.x1][m.y1] = turn;
 			this.chips[turn] = new Chip(m.x1, m.y1, turn % 2, this);
-			System.out.println(this.chips[turn]);
-			System.out.println("TEST");
-			for (int i = 0; i < this.getChip(1).connections.length; i++) {
-				if (this.getChip(1).connections[i] != 0) {
-					System.out.println("INDEX: " + i + " CONNECTION: "
-							+ this.getChip(1).connections[i]);
-				}
-			}
-			System.out.println();
+//			System.out.println(this.chips[turn]);
+//			System.out.println("TEST");
+//			for (int i = 0; i < this.getChip(1).connections.length; i++) {
+//				if (this.getChip(1).connections[i] != 0) {
+//					System.out.println("INDEX: " + i + " CONNECTION: "
+//							+ this.getChip(1).connections[i]);
+//				}
+//			}
+//			System.out.println();
 
 			/**
 			 * if (color == MachinePlayer.BLACK) {
@@ -330,24 +330,27 @@ public class Board {
 	}
 
 	boolean inBounds(int x, int y, int color) {
-		boolean pos1OutBounds = x < 0 || x >= BOARD_SIZE || y < 0
-				|| y >= BOARD_SIZE;
-		boolean isCorner = (x == 0 && y == 0)
-				|| (x == 0 && y == BOARD_SIZE - 1)
-				|| (x == BOARD_SIZE - 1 && y == BOARD_SIZE - 1)
-				|| (x == BOARD_SIZE - 1 && y == 0);
 		boolean isEdge;
 		if (color == MachinePlayer.BLACK) {
 			isEdge = x == 0 || x == Board.BOARD_SIZE - 1;
 		} else {
 			isEdge = y == 0 || y == Board.BOARD_SIZE - 1;
 		}
-		if (pos1OutBounds || isCorner || isEdge) {
+		if (isCornerOrBounds(x,y,color)|| isEdge) {
 			return false;
 		}
 		return true;
 	}
 
+	boolean isCornerOrBounds(int x, int y, int color){
+		boolean pos1OutBounds = x < 0 || x >= BOARD_SIZE || y < 0
+				|| y >= BOARD_SIZE;
+		boolean isCorner = (x == 0 && y == 0)
+				|| (x == 0 && y == BOARD_SIZE - 1)
+				|| (x == BOARD_SIZE - 1 && y == BOARD_SIZE - 1)
+				|| (x == BOARD_SIZE - 1 && y == 0);
+		return pos1OutBounds || isCorner;
+	}
 	/***
 	 * Returns true if there are already two chips in a row in the vicinity of a
 	 * move.

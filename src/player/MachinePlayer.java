@@ -66,7 +66,7 @@ public class MachinePlayer extends Player {
 			return myBest;
 		}
 		if (depth == 0) {
-			myBest.score = this.board.eval(side);
+			myBest.score = this.board.eval(this.color);
 			return myBest;
 		}
 		if (side == this.color) {
