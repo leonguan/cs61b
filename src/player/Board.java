@@ -91,12 +91,8 @@ public class Board {
 			// this);
 			this.boardLocations[m.x1][m.y1] = turn;
 			this.chips[turn] = new Chip(m.x1, m.y1, turn % 2, this);
-			for (int test = 0; test < 8; test++) {
-				if (chips[turn].connections[test] != 0) {
-					System.out.println("NEW CHIP: INDEX: " + test
-							+ " CONNECTION: " + chips[turn].connections[test]);
-				}
-			}
+			System.out.println("right");
+
 			/**
 			 * if (color == MachinePlayer.BLACK) {
 			 * this.blackPieces.add(this.array[m.x1][m.y1]); } else {

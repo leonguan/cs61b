@@ -41,12 +41,12 @@ public class MachinePlayer extends Player {
 		Move m = move.m;
 		this.board = new Board(this.board, m, this.turn);
 		System.out.println("COMPUTER: " + board.eval(this.color));
-//		for (int i = 0; i < 8; i++) {
-//			if (this.board.getChip(this.board.getChipNumber(0, 1)).getConnection(i) != 0) {
-//				System.out.println("NEW CHIP: INDEX: " + i + " CONNECTION: "
-//						+ this.board.getChip(1).getConnection(i));
-//			}
-//		}
+		for (int i = 0; i < 8; i++) {
+			if (this.board.getChip(1).getConnection(i) != 0) {
+				System.out.println("NEW CHIP: INDEX: " + i + " CONNECTION: "
+						+ this.board.getChip(1).getConnection(i));
+			}
+		}
 		this.turn++;
 		return m;
 	}

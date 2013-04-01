@@ -30,18 +30,24 @@ enum Direction {
 public class Chip {
 	int x;
 	int y;
-	int[] connections = new int[8];
+	int[] connections;
 	int color;
 
 	public Chip(Chip c) {
+		this.connections = new int[8];
 		if (c == null) {
 			return;
 		}
 		this.x = c.x;
 		this.y = c.y;
-		for (int i = 0; i< this.connections.length; i++){
-			this.connections[i]=c.connections[i];
+		for (int i = 0; i < this.connections.length; i++) {
+			this.connections[i] = c.connections[i];
+			if (c.connections[i] != 0) {
+				System.out.println("INDEX: " + i + " CONNECTION: "
+						+ c.connections[i]);
+			}
 		}
+
 		this.color = c.color;
 	}
 
@@ -49,14 +55,17 @@ public class Chip {
 	// the existence of
 	// every chip of the same color on the same board.
 	public Chip(int x, int y, int color, Board b) {
+		this.connections = new int[8];
 		this.x = x;
 		this.y = y;
 		this.color = color;
 		updateChips(x, y, b);
-//		for (int i = 0; i<8; i++){
-//			System.out.println("NEW CHIP: INDEX: " + i + " CONNECTION: "
-//					+ connections[i]);
-//		}
+		for (int i = 0; i < this.connections.length; i++) {
+			if (this.connections[i] != 0) {
+				System.out.println("INDEX: " + i + " CONNECTION: "
+						+ this.connections[i]);
+			}
+		}
 	}
 
 	public void stepChip(int x1, int y1, Board b) {
@@ -96,14 +105,14 @@ public class Chip {
 			while (board.inBounds(x + dx * i, y + dy * i, color)) {
 				int tempChip = board.getChipNumber(x + dx * i, y + dy * i);
 				if (tempChip != 0) {
-					connections[d.getIndex()] = tempChip;
+					this.connections[d.getIndex()] = tempChip;
 					outOfBounds = false;
 					break;
 				}
 				i++;
 			}
 			if (outOfBounds) {
-				connections[d.getIndex()] = 0;
+				this.connections[d.getIndex()] = 0;
 			}
 		}
 	}
