@@ -115,7 +115,6 @@ public class MachinePlayer extends Player {
 		if (b) {
 			this.turn++;
 		}
-		System.out.println(this.board.eval((this.color+1)%2));
 		return b;
 	}
 

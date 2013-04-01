@@ -38,7 +38,7 @@ public class Board {
 				this.chips[i] = new Chip(b.chips[i]);
 			}
 		}
-		
+
 		this.addMove(m, turn);
 	}
 
@@ -90,19 +90,8 @@ public class Board {
 			return false;
 		}
 		if (m.moveKind == Move.ADD) {
-			// this.boardLocations[m.x1][m.y1] = new Chip(m.x1, m.y1, color,
-			// this);
 			this.boardLocations[m.x1][m.y1] = turn;
 			this.chips[turn] = new Chip(m.x1, m.y1, turn % 2, this);
-//			System.out.println(this.chips[turn]);
-//			System.out.println("TEST");
-//			for (int i = 0; i < this.getChip(1).connections.length; i++) {
-//				if (this.getChip(1).connections[i] != 0) {
-//					System.out.println("INDEX: " + i + " CONNECTION: "
-//							+ this.getChip(1).connections[i]);
-//				}
-//			}
-//			System.out.println();
 
 			/**
 			 * if (color == MachinePlayer.BLACK) {
@@ -114,9 +103,6 @@ public class Board {
 					|| this.chips[this.boardLocations[m.x2][m.y2]].color != turn % 2) {
 				return false;
 			}
-			// Does this work?
-			// For step moves, we should split this into a removeChip and then
-			// call addChip on it
 			int chipNum = this.getChipNumber(m.x2, m.y2);
 			setLocation(m.x2, m.y2, 0);
 			this.getChip(chipNum).stepChip(m.x1, m.y1, this);
@@ -336,13 +322,13 @@ public class Board {
 		} else {
 			isEdge = y == 0 || y == Board.BOARD_SIZE - 1;
 		}
-		if (isCornerOrBounds(x,y,color)|| isEdge) {
+		if (isCornerOrBounds(x, y, color) || isEdge) {
 			return false;
 		}
 		return true;
 	}
 
-	boolean isCornerOrBounds(int x, int y, int color){
+	boolean isCornerOrBounds(int x, int y, int color) {
 		boolean pos1OutBounds = x < 0 || x >= BOARD_SIZE || y < 0
 				|| y >= BOARD_SIZE;
 		boolean isCorner = (x == 0 && y == 0)
@@ -351,6 +337,7 @@ public class Board {
 				|| (x == BOARD_SIZE - 1 && y == 0);
 		return pos1OutBounds || isCorner;
 	}
+
 	/***
 	 * Returns true if there are already two chips in a row in the vicinity of a
 	 * move.
@@ -361,33 +348,38 @@ public class Board {
 	 * @return
 	 */
 	private boolean hasTwoChips(Move m, int turn) {
-		int temp = 0;
+		int stepCurrLoc = 0;
+		int numSurrounding = 0;
+		int color = turn % 2;
 		if (m.moveKind == Move.STEP) {
-			temp = this.boardLocations[m.x2][m.y2];
+			stepCurrLoc = this.boardLocations[m.x2][m.y2];
 			this.boardLocations[m.x2][m.y2] = 0;
 		}
-		int color = turn % 2;
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
-				if (i == 0 && j == 0 || m.x1 + i >= BOARD_SIZE || m.x1 + i < 0
-						|| m.y1 + j >= BOARD_SIZE || m.y1 + j < 0) {
+				if ((i == 0 && j == 0)
+						|| isCornerOrBounds(m.x1 + i, m.y1 + j, color)) {
 					continue;
 				} else {
 					int first = this.boardLocations[m.x1 + i][m.y1 + j];
 					if (first != 0 && first % 2 == color) {
+						numSurrounding+=1;
+						if (numSurrounding >= 2) {
+							if (m.moveKind == Move.STEP) {
+								this.boardLocations[m.x2][m.y2] = stepCurrLoc;
+							}
+							return true;
+						}
 						for (int x = -1; x < 2; x++) {
 							for (int y = -1; y < 2; y++) {
-								if ((x == 0 && y == 0)
-										|| m.x1 + i + x >= BOARD_SIZE
-										|| m.x1 + i + x < 0 || m.y1 + j + y < 0
-										|| m.y1 + j + y >= BOARD_SIZE) {
-									continue;
-								} else {
+								if (!(x == 0 && y == 0)
+										&& !isCornerOrBounds(m.x1 + i + x, m.y1
+												+ j + y, color)) {
 									int second = this.boardLocations[m.x1 + i
 											+ x][m.y1 + j + y];
 									if (second != 0 && second % 2 == color) {
 										if (m.moveKind == Move.STEP) {
-											this.boardLocations[m.x2][m.y2] = temp;
+											this.boardLocations[m.x2][m.y2] = stepCurrLoc;
 										}
 										return true;
 									}
@@ -399,7 +391,7 @@ public class Board {
 			}
 		}
 		if (m.moveKind == Move.STEP) {
-			this.boardLocations[m.x2][m.y2] = temp;
+			this.boardLocations[m.x2][m.y2] = stepCurrLoc;
 		}
 		return false;
 	}
