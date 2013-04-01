@@ -34,7 +34,9 @@ public class Board {
 			}
 		}
 		for (int i = 0; i < TOTAL_CHIPS + 1; i++) {
-			this.chips[i] = new Chip(b.chips[i]);
+			if (b.chips[i] != null) {
+				this.chips[i] = new Chip(b.chips[i]);
+			}
 		}
 		this.addMove(m, turn);
 	}
