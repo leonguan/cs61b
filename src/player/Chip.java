@@ -70,8 +70,11 @@ public class Chip {
 
 	public void stepChip(int x1, int y1, Board b) {
 		for (int i = 0; i < 8; i++) {
-			b.getChip(this.getConnection(i)).setConnection((i + 4) % 8,
-					this.getConnection((i + 4) % 8));
+			int chipNum = this.getConnection(i);
+			if (chipNum != 0) {
+				b.getChip(chipNum).setConnection((i + 4) % 8,
+						this.getConnection((i + 4) % 8));
+			}
 		}
 	}
 
@@ -106,7 +109,7 @@ public class Chip {
 				int tempChip = board.getChipNumber(x + dx * i, y + dy * i);
 				if (tempChip != 0) {
 					this.connections[d.getIndex()] = tempChip;
-					stepChip(x+dx*i, y+dy*i, board);
+					stepChip(x + dx * i, y + dy * i, board);
 					outOfBounds = false;
 					break;
 				}
