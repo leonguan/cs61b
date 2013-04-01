@@ -109,7 +109,8 @@ public class Chip {
 				int tempChip = board.getChipNumber(x + dx * i, y + dy * i);
 				if (tempChip != 0) {
 					this.connections[d.getIndex()] = tempChip;
-					stepChip(x + dx * i, y + dy * i, board);
+					Chip neighbor = board.getChip(tempChip);
+					neighbor.connections[(d.getIndex()+4)%8]=board.getChipNumber(x, y);
 					outOfBounds = false;
 					break;
 				}
