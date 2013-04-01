@@ -1,5 +1,7 @@
 package player;
+
 import utils.IntegerArrayList;
+
 public class Board {
 	final static int BOARD_SIZE = 8;
 	// Don't need anymore because we have chips. Will just set to null
@@ -17,7 +19,7 @@ public class Board {
 	// private ChipArrayList blackPieces;
 
 	public Board() {
-		this.chips = new Chip[TOTAL_CHIPS+1];
+		this.chips = new Chip[TOTAL_CHIPS + 1];
 		this.boardLocations = new int[BOARD_SIZE][BOARD_SIZE];
 	}
 
@@ -31,7 +33,7 @@ public class Board {
 				this.boardLocations[i][j] = b.boardLocations[i][j];
 			}
 		}
-		for (int i = 0; i < TOTAL_CHIPS+1; i++) {
+		for (int i = 0; i < TOTAL_CHIPS + 1; i++) {
 			this.chips[i] = new Chip(b.chips[i]);
 		}
 		this.addMove(m, turn);
@@ -45,10 +47,12 @@ public class Board {
 	int[][] getLocations() {
 		return this.boardLocations;
 	}
-	void setLocation(int x, int y, int value){
+
+	void setLocation(int x, int y, int value) {
 		this.boardLocations[x][y] = value;
 		return;
 	}
+
 	Chip[] getChips() {
 		return this.chips;
 	}
@@ -76,7 +80,6 @@ public class Board {
 	 */
 	// boolean addMove(Move m, int color) {
 	boolean addMove(Move m, int turn) {
-		System.out.println("ADDMOVE: TURN " + turn);
 		if (m.moveKind == Move.QUIT) {
 			return true;
 		}
@@ -88,6 +91,12 @@ public class Board {
 			// this);
 			this.boardLocations[m.x1][m.y1] = turn;
 			this.chips[turn] = new Chip(m.x1, m.y1, turn % 2, this);
+			for (int test = 0; test < 8; test++) {
+				if (chips[turn].connections[test] != 0) {
+					System.out.println("NEW CHIP: INDEX: " + test
+							+ " CONNECTION: " + chips[turn].connections[test]);
+				}
+			}
 			/**
 			 * if (color == MachinePlayer.BLACK) {
 			 * this.blackPieces.add(this.array[m.x1][m.y1]); } else {
@@ -102,10 +111,10 @@ public class Board {
 			// For step moves, we should split this into a removeChip and then
 			// call addChip on it
 			int chipNum = this.getChipNumber(m.x2, m.y2);
-			setLocation(m.x2,m.y2, 0);
-			this.getChip(chipNum).stepChip(m.x1,m.y1,this);
-			this.chips[chipNum] = new Chip(m.x1, m.y1, turn%2, this);
-			setLocation(m.x1,m.y1, chipNum);
+			setLocation(m.x2, m.y2, 0);
+			this.getChip(chipNum).stepChip(m.x1, m.y1, this);
+			this.chips[chipNum] = new Chip(m.x1, m.y1, turn % 2, this);
+			setLocation(m.x1, m.y1, chipNum);
 		}
 		return true;
 	}
@@ -119,44 +128,64 @@ public class Board {
 	int eval(int color) {
 		int evaluation = 0;
 		int start = 1;
-		if(color == 0){
-			start+=1;
+		if (color == 0) {
+			start += 1;
 		}
-		for(; start < TOTAL_CHIPS; start+=2){
+		for (; start < TOTAL_CHIPS; start += 2) {
 			Chip c = chips[start];
-			for (Direction d: Direction.values())
-			evaluation += extend(c.getX(), c.getY(), d.getX(), d.getY(), color);
+			if (c == null) {
+				continue;
+			}
+			for (Direction d : Direction.values()) {
+				// System.out.println();
+				// System.out.println();
+				// System.out.println("CHIP:" + c.toString());
+				if ((c.getX() == 0 && d.getX() != 1)
+						|| (c.getX() == 7 && d.getX() != -1)
+						|| (c.getY() == 0 && d.getY() != 1)
+						|| (c.getY() == 7 && d.getY() != -1)) {
+					continue;
+				}
+				evaluation += extend(c.getX(), c.getY(), d.getX(), d.getY(),
+						color);
+			}
 		}
-		System.out.println("EVALUATION: "+ evaluation);
 		return evaluation;
 	}
-	int extend(int x, int y, int mx, int my,int color){
-		int i = 0;
+
+	int extend(int x, int y, int mx, int my, int color) {
+		int i = 1;
 		int total = 0;
-		while(true){
-			if(inBounds(x+mx*i, y+my*i,color)){
-				if(((x == 0 || x == 7) && mx == 0) || ((y == 0||y == 7)&&my == 0)){
-					return total;
-				}
-				if((color == 1 &&(x+mx*i == 0 || x+mx*i == 7)) || (color == 0 && (y+my*i == 0 || y+my*i == 7))){
-					total+=1;
-					if(boardLocations[x+mx*i][y+my*i]!=0){
-						total += 1;
+		while (true) {
+			if (inBounds(x + mx * i, y + my * i, color)) {
+				if ((color == 1 && (x + mx * i == 0 || x + mx * i == 7))
+						|| (color == 0 && (y + my * i == 0 || y + my * i == 7))) {
+					// System.out.println("XVALUE: "+x+", YVALUE: "+y+", MXVALUE: "+mx+", MYVALUE: "+my+" HIT END ZONE");
+					total += 1;
+					if (boardLocations[x + mx * i][y + my * i] != 0) {
+						if (boardLocations[x + mx * i][y + my * i] % 2 == color) {
+							// System.out.println("XVALUE: "+x+", YVALUE: "+y+", MXVALUE: "+mx+", MYVALUE: "+my+"FOUND CHIP");
+
+							total += 2;
+						}
 					}
 					return total;
 				}
 			} else {
 				return total;
 			}
-			if(boardLocations[x+mx*i][y+my*i]!=0){
-				if(boardLocations[x+mx*i][y+my*i]%2 == color){
-					total += 1;
+			if (boardLocations[x + mx * i][y + my * i] != 0) {
+				if (boardLocations[x + mx * i][y + my * i] % 2 == color) {
+					// System.out.println("XVALUE: "+x+", YVALUE: "+y+", MXVALUE: "+mx+", MYVALUE: "+my+"FOUND CHIP");
+
+					total += 2;
 				}
 				return total;
 			}
-			i+=1;
+			i += 1;
 		}
 	}
+
 	/**
 	 * Returns true if player with specified color has a valid network. NOTE I
 	 * THINK IT"S NECESSARY TO IMPLEMENT AN ARRAYLIST FOR THIS METHOD.
@@ -197,16 +226,16 @@ public class Board {
 			}
 		}
 		IntegerArrayList visitList = new IntegerArrayList();
-		for(int i = 1; i< 7;i++){
-			if(color == 0){
-				if(boardLocations[0][i] != 0){
-					if(dfs(boardLocations[0][i],visitList, -1)){
+		for (int i = 1; i < 7; i++) {
+			if (color == MachinePlayer.WHITE) {
+				if (boardLocations[0][i] != 0) {
+					if (dfs(boardLocations[0][i], visitList, -1)) {
 						return true;
 					}
 				}
 			} else {
-				if(boardLocations[i][0] != 0){
-					if(dfs(boardLocations[i][0],visitList, -1)){
+				if (boardLocations[i][0] != 0) {
+					if (dfs(boardLocations[i][0], visitList, -1)) {
 						return true;
 					}
 				}
@@ -214,40 +243,41 @@ public class Board {
 		}
 		return false;
 	}
+
 	/**
-	 * current
-	 * visited
-	 * lastDirection
+	 * current visited lastDirection
 	 * 
 	 */
-	public boolean dfs(int current, IntegerArrayList chippy, int direction){
+	public boolean dfs(int current, IntegerArrayList chippy, int direction) {
 		Chip cur = getChip(current);
-		if(cur.getX() == 7 || cur.getY() == 7){
-			if(chippy.size() >= 6){
+		if (cur.getX() == 7 || cur.getY() == 7) {
+			if (chippy.size() >= 6) {
 				return true;
 			} else {
 				return false;
 			}
 		}
-		if(cur.getX() == 0 || cur.getY() == 0){
+		if (cur.getX() == 0 || cur.getY() == 0) {
 			return false;
 		}
 		int nextNode;
 		chippy.add(new Integer(current));
-		for(int i = 0; i < 8; i++){
-			if(i == direction){
+		for (int i = 0; i < 8; i++) {
+			if (i == direction) {
 				continue;
 			}
 			nextNode = cur.getConnection(i);
-			if(nextNode != 0 && current%2 != nextNode%2 && !chippy.contains(nextNode)){
-				if(dfs(nextNode, chippy, i)){
+			if (nextNode != 0 && current % 2 != nextNode % 2
+					&& !chippy.contains(nextNode)) {
+				if (dfs(nextNode, chippy, i)) {
 					return true;
-				}				
+				}
 			}
 		}
 		chippy.remove(current);
 		return false;
 	}
+
 	/**
 	 * Gets chip at position (x,y).
 	 * 
@@ -260,7 +290,6 @@ public class Board {
 	 */
 	boolean shouldAdd(int turn) {
 		// return this.blackPieces.size() < 10 || this.whitePieces.size() < 10;
-		System.out.println("ADD turn : " + turn);
 		return turn <= TOTAL_CHIPS;
 	}
 
@@ -322,6 +351,11 @@ public class Board {
 	 * @return
 	 */
 	private boolean hasTwoChips(Move m, int turn) {
+		int temp = 0;
+		if (m.moveKind == Move.STEP) {
+			temp = this.boardLocations[m.x2][m.y2];
+			this.boardLocations[m.x2][m.y2] = 0;
+		}
 		int color = turn % 2;
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
@@ -333,7 +367,7 @@ public class Board {
 					if (first != 0 && first % 2 == color) {
 						for (int x = -1; x < 2; x++) {
 							for (int y = -1; y < 2; y++) {
-								if (x == 0 && y == 0
+								if ((x == 0 && y == 0)
 										|| m.x1 + i + x >= BOARD_SIZE
 										|| m.x1 + i + x < 0 || m.y1 + j + y < 0
 										|| m.y1 + j + y >= BOARD_SIZE) {
@@ -342,6 +376,9 @@ public class Board {
 									int second = this.boardLocations[m.x1 + i
 											+ x][m.y1 + j + y];
 									if (second != 0 && second % 2 == color) {
+										if (m.moveKind == Move.STEP) {
+											this.boardLocations[m.x2][m.y2] = temp;
+										}
 										return true;
 									}
 								}
@@ -350,6 +387,9 @@ public class Board {
 					}
 				}
 			}
+		}
+		if (m.moveKind == Move.STEP) {
+			this.boardLocations[m.x2][m.y2] = temp;
 		}
 		return false;
 	}

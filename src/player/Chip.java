@@ -1,7 +1,5 @@
 package player;
 
-import utils.ChipArrayList;
-
 enum Direction {
 	NORTH(0, 0, 1), NORTHEAST(1, 1, 1), EAST(2, 1, 0), SOUTHEAST(3, 1, -1), SOUTH(
 			4, 0, -1), SOUTHWEST(5, -1, -1), WEST(6, -1, 0), NORTHWEST(7, -1, 1);
@@ -41,7 +39,9 @@ public class Chip {
 		}
 		this.x = c.x;
 		this.y = c.y;
-		this.connections = c.connections;
+		for (int i = 0; i< this.connections.length; i++){
+			this.connections[i]=c.connections[i];
+		}
 		this.color = c.color;
 	}
 
@@ -53,6 +53,10 @@ public class Chip {
 		this.y = y;
 		this.color = color;
 		updateChips(x, y, b);
+//		for (int i = 0; i<8; i++){
+//			System.out.println("NEW CHIP: INDEX: " + i + " CONNECTION: "
+//					+ connections[i]);
+//		}
 	}
 
 	public void stepChip(int x1, int y1, Board b) {
@@ -61,12 +65,15 @@ public class Chip {
 					this.getConnection((i + 4) % 8));
 		}
 	}
-	public int getX(){
+
+	public int getX() {
 		return this.x;
 	}
-	public int getY(){
+
+	public int getY() {
 		return this.y;
 	}
+
 	public int getConnection(int i) {
 		return this.connections[i];
 	}
@@ -75,21 +82,29 @@ public class Chip {
 		this.connections[i] = j;
 	}
 
-	private void updateChips(int x, int y, Board board){
+	public String toString() {
+		return "X VALUE: " + this.x + " Y VALUE: " + this.y;
+	}
+
+	private void updateChips(int x, int y, Board board) {
 		for (Direction d : Direction.values()) {
-			int i = 0;
+			int i = 1;
 			// TODO CHANGE NULL TO SOMETHING ELSE
 			int dx = d.getX();
 			int dy = d.getY();
+			boolean outOfBounds = true;
 			while (board.inBounds(x + dx * i, y + dy * i, color)) {
 				int tempChip = board.getChipNumber(x + dx * i, y + dy * i);
 				if (tempChip != 0) {
 					connections[d.getIndex()] = tempChip;
+					outOfBounds = false;
 					break;
 				}
 				i++;
 			}
-			connections[d.getIndex()] = 0;
+			if (outOfBounds) {
+				connections[d.getIndex()] = 0;
+			}
 		}
 	}
 	// Returns an array of all the other chips of the same color on the same
