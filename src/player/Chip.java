@@ -1,8 +1,8 @@
 package player;
 
 enum Direction {
-	NORTH(0, 0, 1), NORTHEAST(1, 1, 1), EAST(2, 1, 0), SOUTHEAST(3, 1, -1), SOUTH(
-			4, 0, -1), SOUTHWEST(5, -1, -1), WEST(6, -1, 0), NORTHWEST(7, -1, 1);
+	NORTH(0, 0, -1), NORTHEAST(1, 1, -1), EAST(2, 1, 0), SOUTHEAST(3, 1, 1), SOUTH(
+			4, 0, 1), SOUTHWEST(5, -1, 1), WEST(6, -1, 0), NORTHWEST(7, -1, -1);
 
 	private final int x;
 	private final int y;
