@@ -349,13 +349,9 @@ public class Board {
 		if (color == MachinePlayer.WHITE) {
 			for (int i = 1; i < 7; i++) {
 				if (this.boardLocations[0][i] != 0) {
-					System.out
-							.println("HAS CHIP FIRST SIDE FOR COLOR " + color);
 					hasChipOnFirstSide = true;
 				}
 				if (this.boardLocations[7][i] != 0) {
-					System.out.println("HAS CHIP SECOND SIDE FOR COLOR "
-							+ color);
 					hasChipOnSecondSide = true;
 				}
 			}

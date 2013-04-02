@@ -22,7 +22,7 @@ public class MachinePlayer extends Player {
 	public MachinePlayer(int color) {
 		this.color = color;
 		this.board = new Board();
-		this.searchDepth = 1;
+		this.searchDepth = 3;
 	}
 
 	// Creates a machine player with the given color and search depth. Color is
@@ -61,7 +61,6 @@ public class MachinePlayer extends Player {
 				if (currChip != null
 						&& (currChip.getX() == 0 || currChip.getY() == 0)) {
 					if (this.board.isValidNetwork(side, 0, -1, currChip, list)) {
-						System.out.println("SOMEONE HAS VALID");
 						if (side == this.color) {
 							System.out.println("WIN");
 							myBest.score = 1000;
@@ -124,8 +123,7 @@ public class MachinePlayer extends Player {
 		boolean b = this.board.addMove(m, this.turn);
 		if (b) {
 			this.turn++;
-		}
-		System.out.println("YA");
+		} 	
 		IntegerArrayList list = new IntegerArrayList();
 		int chipIndex = 2;
 		while (chipIndex < 21) {
@@ -138,7 +136,6 @@ public class MachinePlayer extends Player {
 			}
 			chipIndex += 2;
 		}
-		System.out.println("GG");
 		return b;
 	}
 
