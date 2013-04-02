@@ -14,6 +14,17 @@ public class IntegerArrayList {
 		this(10);
 	}
 
+	public IntegerArrayList(IntegerArrayList list) {
+		this.arraylist = new Integer[list.arraylist.length];
+		int i = 0;
+		while (i < list.size()) {
+			this.add(i, list.get(i));
+			i++;
+		}
+		this.size = list.size();
+
+	}
+
 	public void add(Integer m) {
 		this.add(this.size(), m);
 	}
@@ -26,7 +37,7 @@ public class IntegerArrayList {
 			}
 			this.arraylist = newArray;
 		}
-		
+
 		if (index > this.size) {
 			throw new IndexOutOfBoundsException();
 		}
@@ -39,24 +50,33 @@ public class IntegerArrayList {
 	public Integer get(int index) {
 		return this.arraylist[index];
 	}
-	
-	public boolean contains(Integer target){
-		for (int i =0; i<this.size(); i++){
-			if (target == this.get(i)){
+
+	public boolean contains(Integer target) {
+		for (int i = 0; i < this.size(); i++) {
+			if (target == this.get(i)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public void remove(Integer target){
-		for(int i = 0; i<this.size(); i++){
-			if(target == this.get(i)){
+	public void remove(Integer target) {
+		for (int i = 0; i < this.size(); i++) {
+			if (target == this.get(i)) {
 				this.add(i, null);
 			}
 		}
 	}
+
 	public int size() {
 		return this.size;
+	}
+	
+	public String toString(){
+		String str = "Nodes Visited: ";
+		for (int i = 0; i< this.arraylist.length;i++){
+			str=str + " " + this.arraylist[i]+ " ";
+		}
+		return str;
 	}
 }

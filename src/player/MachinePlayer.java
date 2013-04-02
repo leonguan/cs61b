@@ -2,6 +2,7 @@
 
 package player;
 
+import utils.IntegerArrayList;
 import utils.MoveArrayList;
 
 /**
@@ -21,7 +22,7 @@ public class MachinePlayer extends Player {
 	public MachinePlayer(int color) {
 		this.color = color;
 		this.board = new Board();
-		this.searchDepth = 3;
+		this.searchDepth = 1;
 	}
 
 	// Creates a machine player with the given color and search depth. Color is
@@ -35,17 +36,10 @@ public class MachinePlayer extends Player {
 	// Returns a new move by "this" player. Internally records the move (updates
 	// the internal game board) as a move by "this" player.
 	public Move chooseMove() {
-		// TODO update gameBoard & make move.
 		Best move = chooseMove(this.turn, -10000, 10000, this.searchDepth);
 		Move m = move.m;
 		this.board = new Board(this.board, m, this.turn);
 		System.out.println("COMPUTER Score: " + board.eval(this.color));
-		for (int i = 0; i < 8; i++) {
-			if (this.board.getChip(1).getConnection(i) != 0) {
-				System.out.println("NEW CHIP: INDEX: " + i + " CONNECTION: "
-						+ this.board.getChip(1).getConnection(i));
-			}
-		}
 		this.turn++;
 		return m;
 	}
@@ -60,12 +54,13 @@ public class MachinePlayer extends Player {
 		} else {
 			chipIndex = 1;
 		}
-		if (turn >= 11 && this.board.hasChipsInBothGoals(side)) {
+		IntegerArrayList list = new IntegerArrayList();
+		if (this.board.hasChipsInBothGoals(side)) {
 			while (chipIndex < 21) {
 				Chip currChip = this.board.getChip(chipIndex);
-				if (currChip!= null && (currChip.getX() == 0 || currChip.getY() == 0)) {
-					System.out.println("CHECK VALID NETWORK FOR SIDE: "+ side);
-					if (this.board.isValidNetwork(side, 0, -1, currChip)){
+				if (currChip != null
+						&& (currChip.getX() == 0 || currChip.getY() == 0)) {
+					if (this.board.isValidNetwork(side, 0, -1, currChip, list)) {
 						System.out.println("SOMEONE HAS VALID");
 						if (side == this.color) {
 							System.out.println("WIN");
@@ -78,7 +73,6 @@ public class MachinePlayer extends Player {
 					}
 				}
 				chipIndex += 2;
-				
 			}
 		}
 		if (depth == 0) {
@@ -131,6 +125,20 @@ public class MachinePlayer extends Player {
 		if (b) {
 			this.turn++;
 		}
+		System.out.println("YA");
+		IntegerArrayList list = new IntegerArrayList();
+		int chipIndex = 2;
+		while (chipIndex < 21) {
+			Chip currChip = this.board.getChip(chipIndex);
+			if (currChip != null
+					&& (currChip.getX() == 0 || currChip.getY() == 0)) {
+				if (this.board.isValidNetwork(0, 0, -1, currChip, list)) {
+					System.out.println("SOMEONE HAS VALID");
+				}
+			}
+			chipIndex += 2;
+		}
+		System.out.println("GG");
 		return b;
 	}
 
@@ -158,14 +166,8 @@ public class MachinePlayer extends Player {
 					if (iter == 0) {
 						iter = 2;
 					}
-					/**
-					 * if (side == MachinePlayer.BLACK) { chips =
-					 * this.board.blackPieces(); } else { chips =
-					 * this.board.whitePieces(); }
-					 */
 					while (iter < this.board.getTotalChips()) {
-						Chip temp = this.board.getChip(iter); // TODO
-																// SKETCH
+						Chip temp = this.board.getChip(iter); 
 						Move m = new Move();
 						m.x1 = i;
 						m.y1 = j;

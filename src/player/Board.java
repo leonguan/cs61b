@@ -1,5 +1,6 @@
 package player;
 
+import utils.ChipArrayList;
 import utils.IntegerArrayList;
 
 public class Board {
@@ -38,7 +39,6 @@ public class Board {
 				this.chips[i] = new Chip(b.chips[i]);
 			}
 		}
-
 		this.addMove(m, turn);
 	}
 
@@ -186,28 +186,48 @@ public class Board {
 	 * @param color
 	 * @return
 	 */
-	boolean isValidNetwork(int color, int length, int prevDir, Chip currChip) {
-		if (currChip == null || currChip.getColor() != color) {
+	boolean isValidNetwork(int color, int length, int prevDir, Chip currChip,
+			IntegerArrayList nodesVisited) {
+		int currChipNumber = this.getChipNumber(currChip.getX(),
+				currChip.getY());
+		System.out.println("8 WHERE U AT? " + currChipNumber);
+		if (nodesVisited.contains(currChipNumber)) {
+			System.out.println(nodesVisited.toString());
+			System.out.println("CURR CHIP: " + this.getChipNumber(currChip.getX(), currChip.getY()));
 			return false;
+		} else {
+			nodesVisited.add(currChipNumber);
 		}
 		if (currChip.getX() == 7 || currChip.getY() == 7) {
-			System.out.println("AT END GOAL, LENGTH: " + length);
-			if (length < 6){
+			System.out.println("AT END GOAL for COLOR:" + color + " , LENGTH: "
+					+ length);
+			if (length < 5) {
 				return false;
 			}
 			return true;
 		}
 		for (Direction d : Direction.values()) {
-			if (d.getIndex() == (prevDir + 4) % 8) {
+			if (prevDir != -1
+					&& (d.getIndex() == (prevDir + 4) % 8 || prevDir == d
+							.getIndex())) {
+				System.out.println("prevDir: " + prevDir + " curr dir: " + d.toString());
 				continue;
 			}
 			int neighborChipIndex = currChip.getConnection(d.getIndex());
-
-			boolean valid = isValidNetwork(color, length+1, d.getIndex(), this.getChip(neighborChipIndex));
-			if (valid){
+			if (neighborChipIndex == 0) {
+				continue;
+			}
+			Chip nextChip = this.getChip(neighborChipIndex);
+			if (nextChip.getColor() != color) {
+				System.out.println("CURR CHIP: " + currChipNumber + " NEXT CHIP: " +nextChip.toString());
+				return false;
+			}
+			boolean valid = isValidNetwork(color, length + 1, d.getIndex(),
+					nextChip, new IntegerArrayList(nodesVisited));
+			if (valid) {
+				System.out.println("NEVER HAPPENS");
 				return true;
 			}
-
 		}
 		// IntegerArrayList visitList = new IntegerArrayList();
 		// for (int i = 1; i < 7; i++) {
@@ -225,6 +245,8 @@ public class Board {
 		// }
 		// }
 		// }
+		System.out.println(nodesVisited.toString());
+		System.out.println("CURR CHIP: " + this.getChipNumber(currChip.getX(), currChip.getY()));
 		return false;
 	}
 
@@ -307,19 +329,19 @@ public class Board {
 	}
 
 	boolean inBounds(int x, int y, int color) {
-		boolean isEdge;
-		if (color == MachinePlayer.BLACK) {
-			isEdge = x == 0 || x == Board.BOARD_SIZE - 1;
+		boolean isOtherGoal;
+		if (color == MachinePlayer.WHITE) {
+			isOtherGoal = y == 0 || y == Board.BOARD_SIZE - 1;
 		} else {
-			isEdge = y == 0 || y == Board.BOARD_SIZE - 1;
+			isOtherGoal = x == 0 || x == Board.BOARD_SIZE - 1;
 		}
-		if (isCornerOrBounds(x, y, color) || isEdge) {
+		if (isCornerOrOutOfBounds(x, y, color) || isOtherGoal) {
 			return false;
 		}
 		return true;
 	}
 
-	boolean isCornerOrBounds(int x, int y, int color) {
+	boolean isCornerOrOutOfBounds(int x, int y, int color) {
 		boolean pos1OutBounds = x < 0 || x >= BOARD_SIZE || y < 0
 				|| y >= BOARD_SIZE;
 		boolean isCorner = (x == 0 && y == 0)
@@ -332,13 +354,16 @@ public class Board {
 	boolean hasChipsInBothGoals(int color) {
 		boolean hasChipOnFirstSide = false;
 		boolean hasChipOnSecondSide = false;
-		if (color == MachinePlayer.BLACK) {
+		if (color == MachinePlayer.WHITE) {
 			for (int i = 1; i < 7; i++) {
 				if (this.boardLocations[0][i] != 0) {
-					System.out.println("HAS CHIP FIRST SIDE");
+					System.out
+							.println("HAS CHIP FIRST SIDE FOR COLOR " + color);
 					hasChipOnFirstSide = true;
 				}
 				if (this.boardLocations[7][i] != 0) {
+					System.out.println("HAS CHIP SECOND SIDE FOR COLOR "
+							+ color);
 					hasChipOnSecondSide = true;
 				}
 			}
@@ -375,7 +400,7 @@ public class Board {
 		for (int i = -1; i < 2; i++) {
 			for (int j = -1; j < 2; j++) {
 				if ((i == 0 && j == 0)
-						|| isCornerOrBounds(m.x1 + i, m.y1 + j, color)) {
+						|| isCornerOrOutOfBounds(m.x1 + i, m.y1 + j, color)) {
 					continue;
 				} else {
 					int first = this.boardLocations[m.x1 + i][m.y1 + j];
@@ -390,8 +415,8 @@ public class Board {
 						for (int x = -1; x < 2; x++) {
 							for (int y = -1; y < 2; y++) {
 								if (!(x == 0 && y == 0)
-										&& !isCornerOrBounds(m.x1 + i + x, m.y1
-												+ j + y, color)) {
+										&& !isCornerOrOutOfBounds(m.x1 + i + x,
+												m.y1 + j + y, color)) {
 									int second = this.boardLocations[m.x1 + i
 											+ x][m.y1 + j + y];
 									if (second != 0 && second % 2 == color) {

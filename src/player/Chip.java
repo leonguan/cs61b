@@ -7,9 +7,12 @@ public class Chip {
 	private int color;
 
 	public Chip(Chip c) {
-		this.connections = new int[8];
 		if (c == null) {
 			return;
+		}
+		this.connections = new int[8];
+		for (int i =0; i<this.connections.length;i++){
+			this.connections[i]=c.connections[i];
 		}
 		this.x = c.x;
 		this.y = c.y;
@@ -78,7 +81,7 @@ public class Chip {
 			int dx = d.getX();
 			int dy = d.getY();
 			boolean outOfBounds = true;
-			while (!board.isCornerOrBounds(x + dx * i, y + dy * i, color)) {
+			while (!board.isCornerOrOutOfBounds(x + dx * i, y + dy * i, color)) {
 				int tempChip = board.getChipNumber(x + dx * i, y + dy * i);
 				if (tempChip != 0) {
 					this.connections[d.getIndex()] = tempChip;
