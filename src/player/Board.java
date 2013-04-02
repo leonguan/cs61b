@@ -190,10 +190,7 @@ public class Board {
 			IntegerArrayList nodesVisited) {
 		int currChipNumber = this.getChipNumber(currChip.getX(),
 				currChip.getY());
-		System.out.println("8 WHERE U AT? " + currChipNumber);
 		if (nodesVisited.contains(currChipNumber)) {
-			System.out.println(nodesVisited.toString());
-			System.out.println("CURR CHIP: " + this.getChipNumber(currChip.getX(), currChip.getY()));
 			return false;
 		} else {
 			nodesVisited.add(currChipNumber);
@@ -210,7 +207,6 @@ public class Board {
 			if (prevDir != -1
 					&& (d.getIndex() == (prevDir + 4) % 8 || prevDir == d
 							.getIndex())) {
-				System.out.println("prevDir: " + prevDir + " curr dir: " + d.toString());
 				continue;
 			}
 			int neighborChipIndex = currChip.getConnection(d.getIndex());
@@ -219,13 +215,11 @@ public class Board {
 			}
 			Chip nextChip = this.getChip(neighborChipIndex);
 			if (nextChip.getColor() != color) {
-				System.out.println("CURR CHIP: " + currChipNumber + " NEXT CHIP: " +nextChip.toString());
 				continue;
 			}
 			boolean valid = isValidNetwork(color, length + 1, d.getIndex(),
 					nextChip, new IntegerArrayList(nodesVisited));
 			if (valid) {
-				System.out.println("NEVER HAPPENS");
 				return true;
 			}
 		}
@@ -245,8 +239,6 @@ public class Board {
 		// }
 		// }
 		// }
-		System.out.println(nodesVisited.toString());
-		System.out.println("CURR CHIP: " + this.getChipNumber(currChip.getX(), currChip.getY()));
 		return false;
 	}
 
