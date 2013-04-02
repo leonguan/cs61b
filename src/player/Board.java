@@ -220,7 +220,7 @@ public class Board {
 			Chip nextChip = this.getChip(neighborChipIndex);
 			if (nextChip.getColor() != color) {
 				System.out.println("CURR CHIP: " + currChipNumber + " NEXT CHIP: " +nextChip.toString());
-				return false;
+				continue;
 			}
 			boolean valid = isValidNetwork(color, length + 1, d.getIndex(),
 					nextChip, new IntegerArrayList(nodesVisited));
