@@ -1,6 +1,5 @@
 package player;
 
-import utils.ChipArrayList;
 import utils.IntegerArrayList;
 
 public class Board {
@@ -121,29 +120,96 @@ public class Board {
 	int eval(int color) {
 		int evaluation = 0;
 		int start = 1;
+		int oppStart = 1;
+
 		if (color == 0) {
 			start += 1;
 		}
-		for (; start < TOTAL_CHIPS; start += 2) {
-			Chip c = chips[start];
-			if (c == null) {
-				continue;
+		if (oppStart == 0) {
+			oppStart += 1;
+		}
+
+		while (start < TOTAL_CHIPS || oppStart < TOTAL_CHIPS) {
+			Chip cStart = chips[start];
+			Chip cOpp = chips[oppStart];
+			int cStartX;
+			int cStartY;
+			if (cStart != null) {
+//				evaluation += connectionNum(cStart, color, 0, -1,
+//						new IntegerArrayList());
+				cStartX = cStart.getX();
+				cStartY = cStart.getY();
+			} else {
+				cStartX = -1;
+				cStartY = -1;
+			}
+			int cOppX;
+			int cOppY;
+			if (cOpp != null) {
+//				evaluation -= connectionNum(cOpp, (color + 1) % 2, 0, -1,
+//						new IntegerArrayList());
+				cOppX = cOpp.getX();
+				cOppY = cOpp.getY();
+			} else {
+				cOppX = -1;
+				cOppY = -1;
 			}
 			for (Direction d : Direction.values()) {
-				// System.out.println();
-				// System.out.println();
-				// System.out.println("CHIP:" + c.toString());
-				if ((c.getX() == 0 && d.getX() != 1)
-						|| (c.getX() == 7 && d.getX() != -1)
-						|| (c.getY() == 0 && d.getY() != 1)
-						|| (c.getY() == 7 && d.getY() != -1)) {
+				int dx = d.getX();
+				int dy = d.getY();
+				if (cStartX == -1 || (cStartX == 0 && dx != 1)
+						|| (cStartX == 7 && dx != -1)
+						|| (cStartY == 0 && dy != 1)
+						|| (cStartY == 7 && dy != -1)) {
 					continue;
+				} else {
+					evaluation += extend(cStartX, cStartY, dx, dy, color);
 				}
-				evaluation += extend(c.getX(), c.getY(), d.getX(), d.getY(),
-						color);
+				if (cOppX == -1 || (cOppX == 0 && dx != 1)
+						|| (cOppX == 7 && dx != -1) || (cOppY == 0 && dy != 1)
+						|| (cOppY == 7 && dy != -1)) {
+					continue;
+				} else {
+					evaluation -= extend(cOppX, cOppY, dx, dy, (color + 1) % 2);
+				}
 			}
+			start += 2;
+			oppStart += 2;
+		}
+
+		if (this.hasChipsInBothGoals(color) == true) {
+			evaluation += 10;
 		}
 		return evaluation;
+	}
+
+	int connectionNum(Chip currChip, int color, int sum, int prevDir,
+			IntegerArrayList chipsVisited) {
+		chipsVisited.add(this.getChipNumber(currChip.getX(), currChip.getY()));
+		int currX = currChip.getX();
+		int currY = currChip.getY();
+		for (Direction d : Direction.values()) {
+			int dx = d.getX();
+			int dy = d.getY();
+			if (prevDir == d.getIndex()) {
+				continue;
+			}
+			for (int i = 1; i < 8; i++) {
+				if (this.inBounds(currX + dx*i, currY + dy*i, color)) {
+					int nextChipNum = this
+							.getChipNumber(currX + dx*i, currY + dy*i);
+					Chip nextChip = this.getChip(nextChipNum);
+					if (nextChip != null && !chipsVisited.contains(nextChipNum)
+							&& nextChip.getColor() == color) {
+						sum = sum
+								+ connectionNum(nextChip, color, chipsVisited.size(),
+										d.getIndex(), new IntegerArrayList(
+												chipsVisited));
+					}
+				}
+			}
+		}
+		return sum;
 	}
 
 	int extend(int x, int y, int mx, int my, int color) {
@@ -180,8 +246,7 @@ public class Board {
 	}
 
 	/**
-	 * Returns true if player with specified color has a valid network. NOTE I
-	 * THINK IT"S NECESSARY TO IMPLEMENT AN ARRAYLIST FOR THIS METHOD.
+	 * Returns true if player with specified color has a valid network.
 	 * 
 	 * @param color
 	 * @return
@@ -196,17 +261,16 @@ public class Board {
 			nodesVisited.add(currChipNumber);
 		}
 		if (currChip.getX() == 7 || currChip.getY() == 7) {
-//			System.out.println("AT END GOAL for COLOR:" + color + " , LENGTH: "
-//					+ length);
+			// System.out.println("AT END GOAL for COLOR:" + color +
+			// " , LENGTH: "
+			// + length);
 			if (length < 5) {
 				return false;
 			}
 			return true;
 		}
 		for (Direction d : Direction.values()) {
-			if (prevDir != -1
-					&& (d.getIndex() == (prevDir + 4) % 8 || prevDir == d
-							.getIndex())) {
+			if (prevDir == d.getIndex()) {
 				continue;
 			}
 			int neighborChipIndex = currChip.getConnection(d.getIndex());
@@ -214,7 +278,8 @@ public class Board {
 				continue;
 			}
 			Chip nextChip = this.getChip(neighborChipIndex);
-			if (nextChip.getColor() != color) {
+			if (nextChip.getColor() != color || nextChip.getX() == 0
+					|| nextChip.getY() == 0) {
 				continue;
 			}
 			boolean valid = isValidNetwork(color, length + 1, d.getIndex(),
@@ -223,58 +288,8 @@ public class Board {
 				return true;
 			}
 		}
-		// IntegerArrayList visitList = new IntegerArrayList();
-		// for (int i = 1; i < 7; i++) {
-		// if (color == MachinePlayer.WHITE) {
-		// if (boardLocations[0][i] != 0) {
-		// if (dfs(boardLocations[0][i], visitList, -1)) {
-		// return true;
-		// }
-		// }
-		// } else {
-		// if (boardLocations[i][0] != 0) {
-		// if (dfs(boardLocations[i][0], visitList, -1)) {
-		// return true;
-		// }
-		// }
-		// }
-		// }
 		return false;
 	}
-
-	/**
-	 * current visited lastDirection
-	 * 
-	 */
-	// public boolean dfs(int current, IntegerArrayList chippy, int direction) {
-	// Chip cur = getChip(current);
-	// if (cur.getX() == 7 || cur.getY() == 7) {
-	// if (chippy.size() >= 6) {
-	// return true;
-	// } else {
-	// return false;
-	// }
-	// }
-	// if (cur.getX() == 0 || cur.getY() == 0) {
-	// return false;
-	// }
-	// int nextNode;
-	// chippy.add(new Integer(current));
-	// for (int i = 0; i < 8; i++) {
-	// if (i == direction) {
-	// continue;
-	// }
-	// nextNode = cur.getConnection(i);
-	// if (nextNode != 0 && current % 2 != nextNode % 2
-	// && !chippy.contains(nextNode)) {
-	// if (dfs(nextNode, chippy, i)) {
-	// return true;
-	// }
-	// }
-	// }
-	// chippy.remove(current);
-	// return false;
-	// }
 
 	/**
 	 * Gets chip at position (x,y).

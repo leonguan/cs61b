@@ -22,7 +22,7 @@ public class MachinePlayer extends Player {
 	public MachinePlayer(int color) {
 		this.color = color;
 		this.board = new Board();
-		this.searchDepth = 3;
+		this.searchDepth = 4;
 	}
 
 	// Creates a machine player with the given color and search depth. Color is
@@ -36,27 +36,27 @@ public class MachinePlayer extends Player {
 	// Returns a new move by "this" player. Internally records the move (updates
 	// the internal game board) as a move by "this" player.
 	public Move chooseMove() {
-		Best move = chooseMove(this.turn, -10000, 10000, this.searchDepth);
+		Best move = chooseMove(this.turn, -1000000, 1000000, this.searchDepth);
 		Move m = move.m;
-		if (m == null){
+		if (m == null) {
 			MoveArrayList l = this.getMoves(this.color);
-			for (int iter = 0; iter<l.size(); iter++){
+			for (int iter = 0; iter < l.size(); iter++) {
 				m = l.get(iter);
-				if (this.board.validMove(m, turn)){
+				if (this.board.validMove(m, turn)) {
 					break;
 				}
 			}
 		}
-		//System.out.println("Score: " + move.score);
+		// System.out.println("Score: " + move.score);
 		this.board = new Board(this.board, m, this.turn);
-		//System.out.println("COMPUTER Score: " + board.eval(this.color));
+		// System.out.println("COMPUTER Score: " + board.eval(this.color));
 		this.turn++;
 		return m;
 	}
 
 	public Best chooseMove(int turn, double alpha, double beta, int depth) {
 		Best myBest = new Best();
-		Best reply;
+		Best reply = new Best();
 		int side = turn % 2;
 		int chipIndex;
 		if (side == MachinePlayer.BLACK) {
@@ -72,19 +72,17 @@ public class MachinePlayer extends Player {
 						&& (currChip.getX() == 0 || currChip.getY() == 0)) {
 					if (this.board.isValidNetwork(side, 0, -1, currChip, list)) {
 						if (side == this.color) {
-							myBest.score = 1000 + 100* depth;
+							myBest.score = 100000 - 100 * turn;
 						} else {
-							myBest.score = -1000 - 100 * depth;
+							myBest.score = -100000 + 100 * turn;
 						}
+						Move m = new Move();
+						m.moveKind = Move.QUIT;
 						return myBest;
 					}
 				}
 				chipIndex += 2;
 			}
-		}
-		if (depth == 0) {
-			myBest.score = this.board.eval(this.color);
-			return myBest;
 		}
 		if (side == this.color) {
 			myBest.score = alpha;
@@ -100,7 +98,12 @@ public class MachinePlayer extends Player {
 				Board currBoard = this.board;
 				Board afterMove = new Board(this.board, m, turn);
 				this.board = afterMove;
-				reply = chooseMove(turn + 1, alpha, beta, depth - 1);
+				if (depth == 1) {
+					reply.m = m;
+					reply.score = this.board.eval(this.color);
+				} else {
+					reply = chooseMove(turn + 1, alpha, beta, depth - 1);
+				}
 				this.board = currBoard;
 				if (side == this.color && reply.score > myBest.score) {
 					myBest.m = m;
@@ -126,24 +129,24 @@ public class MachinePlayer extends Player {
 	// illegal, returns false without modifying the internal state of "this"
 	// player. This method allows your opponents to inform you of their moves.
 	public boolean opponentMove(Move m) {
-//		System.out.println("OPP TURN: " + turn);
+		// System.out.println("OPP TURN: " + turn);
 		boolean b = this.board.addMove(m, this.turn);
 		if (b) {
 			this.turn++;
-		} 	
+		}
 		IntegerArrayList list = new IntegerArrayList();
 		int chipIndex;
-		if (this.color == MachinePlayer.BLACK){
+		if (this.color == MachinePlayer.BLACK) {
 			chipIndex = 1;
-		}
-		else{
+		} else {
 			chipIndex = 2;
 		}
 		while (chipIndex < 21) {
 			Chip currChip = this.board.getChip(chipIndex);
 			if (currChip != null
 					&& (currChip.getX() == 0 || currChip.getY() == 0)) {
-				if (this.board.isValidNetwork((this.color+1)%2, 0, -1, currChip, list)) {
+				if (this.board.isValidNetwork((this.color + 1) % 2, 0, -1,
+						currChip, list)) {
 				}
 			}
 			chipIndex += 2;
@@ -158,7 +161,7 @@ public class MachinePlayer extends Player {
 	// player to solve.
 	public boolean forceMove(Move m) {
 		boolean b = this.board.addMove(m, this.turn);
-		if (b){
+		if (b) {
 			this.turn++;
 		}
 		return b;
@@ -180,7 +183,7 @@ public class MachinePlayer extends Player {
 						iter = 2;
 					}
 					while (iter < this.board.getTotalChips()) {
-						Chip temp = this.board.getChip(iter); 
+						Chip temp = this.board.getChip(iter);
 						Move m = new Move();
 						m.x1 = i;
 						m.y1 = j;
