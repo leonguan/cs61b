@@ -43,4 +43,5 @@ public class MoveArrayList extends ArrayList {
 	public int size() {
 		return this.size;
 	}
+
 }

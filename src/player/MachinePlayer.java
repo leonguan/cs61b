@@ -38,8 +38,18 @@ public class MachinePlayer extends Player {
 	public Move chooseMove() {
 		Best move = chooseMove(this.turn, -10000, 10000, this.searchDepth);
 		Move m = move.m;
+		if (m == null){
+			MoveArrayList l = this.getMoves(this.color);
+			for (int iter = 0; iter<l.size(); iter++){
+				m = l.get(iter);
+				if (this.board.validMove(m, turn)){
+					break;
+				}
+			}
+		}
+		//System.out.println("Score: " + move.score);
 		this.board = new Board(this.board, m, this.turn);
-		System.out.println("COMPUTER Score: " + board.eval(this.color));
+		//System.out.println("COMPUTER Score: " + board.eval(this.color));
 		this.turn++;
 		return m;
 	}
@@ -62,11 +72,9 @@ public class MachinePlayer extends Player {
 						&& (currChip.getX() == 0 || currChip.getY() == 0)) {
 					if (this.board.isValidNetwork(side, 0, -1, currChip, list)) {
 						if (side == this.color) {
-							System.out.println("WIN");
-							myBest.score = 1000;
+							myBest.score = 1000 + 100* depth;
 						} else {
-							System.out.println("LOSE");
-							myBest.score = -1000;
+							myBest.score = -1000 - 100 * depth;
 						}
 						return myBest;
 					}
@@ -85,7 +93,6 @@ public class MachinePlayer extends Player {
 		}
 
 		MoveArrayList moves = this.getMoves(side);
-
 		int i = 0;
 		while (i < moves.size()) {
 			Move m = moves.get(i);
@@ -119,19 +126,24 @@ public class MachinePlayer extends Player {
 	// illegal, returns false without modifying the internal state of "this"
 	// player. This method allows your opponents to inform you of their moves.
 	public boolean opponentMove(Move m) {
-		System.out.println("OPP TURN: " + turn);
+//		System.out.println("OPP TURN: " + turn);
 		boolean b = this.board.addMove(m, this.turn);
 		if (b) {
 			this.turn++;
 		} 	
 		IntegerArrayList list = new IntegerArrayList();
-		int chipIndex = 2;
+		int chipIndex;
+		if (this.color == MachinePlayer.BLACK){
+			chipIndex = 1;
+		}
+		else{
+			chipIndex = 2;
+		}
 		while (chipIndex < 21) {
 			Chip currChip = this.board.getChip(chipIndex);
 			if (currChip != null
 					&& (currChip.getX() == 0 || currChip.getY() == 0)) {
-				if (this.board.isValidNetwork(0, 0, -1, currChip, list)) {
-					System.out.println("SOMEONE HAS VALID");
+				if (this.board.isValidNetwork((this.color+1)%2, 0, -1, currChip, list)) {
 				}
 			}
 			chipIndex += 2;
@@ -145,7 +157,11 @@ public class MachinePlayer extends Player {
 	// player. This method is used to help set up "Network problems" for your
 	// player to solve.
 	public boolean forceMove(Move m) {
-		return this.board.addMove(m, this.turn);
+		boolean b = this.board.addMove(m, this.turn);
+		if (b){
+			this.turn++;
+		}
+		return b;
 	}
 
 	private MoveArrayList getMoves(int side) {

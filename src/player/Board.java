@@ -196,8 +196,8 @@ public class Board {
 			nodesVisited.add(currChipNumber);
 		}
 		if (currChip.getX() == 7 || currChip.getY() == 7) {
-			System.out.println("AT END GOAL for COLOR:" + color + " , LENGTH: "
-					+ length);
+//			System.out.println("AT END GOAL for COLOR:" + color + " , LENGTH: "
+//					+ length);
 			if (length < 5) {
 				return false;
 			}
