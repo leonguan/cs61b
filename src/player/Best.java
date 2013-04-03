@@ -1,7 +1,7 @@
 package player;
 
 public class Best {
-	double score;
+	int score;
 	Move m;
 	
 	public Best(){
