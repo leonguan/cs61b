@@ -67,18 +67,18 @@ public class MachinePlayer extends Player {
 
 		MoveArrayList moves = this.getMoves(side);
 		int i = 0;
-		int chipIndex;
-		if (side == MachinePlayer.BLACK) {
-			chipIndex = 2;
-		} else {
-			chipIndex = 1;
-		}
 		while (i < moves.size()) {
 			Move m = moves.get(i);
 			if (this.board.validMove(m, turn)) {
 				Board currBoard = this.board;
 				Board afterMove = new Board(this.board, m, turn);
 				this.board = afterMove;
+				int chipIndex;
+				if (side == MachinePlayer.BLACK) {
+					chipIndex = 2;
+				} else {
+					chipIndex = 1;
+				}
 				if (this.board.hasChipsInBothGoals(side)) {
 					while (chipIndex < 21) {
 						IntegerArrayList list = new IntegerArrayList();
