@@ -37,7 +37,7 @@ public class MachinePlayer extends Player {
 	// the internal game board) as a move by "this" player.
 	public Move chooseMove() {
 		Best move = chooseMove(this.turn, -1000000, 1000000, this.searchDepth);
-		System.out.println("Computer turn: " + turn);
+//		System.out.println("Computer turn: " + turn);
 		Move m = move.m;
 		if (m == null) {
 			MoveArrayList l = this.getMoves(this.color);
@@ -87,15 +87,13 @@ public class MachinePlayer extends Player {
 								&& (currChip.getX() == 0 || currChip.getY() == 0)) {
 							if (this.board.isValidNetwork(side, 0, -1,
 									currChip, list)) {
-								System.out.println("Color: " + side
-										+ " won on turn: " + turn);
+//								System.out.println("Color: " + side
+//										+ " won on turn: " + turn);
 								if (side == this.color) {
 									myBest.score = 100000 - 100 * turn;
 								} else {
 									myBest.score = -100000 + 100 * turn;
 								}
-								m = new Move();
-								m.moveKind = Move.ADD;
 								myBest.m = m;
 								return myBest;
 							}
@@ -134,7 +132,7 @@ public class MachinePlayer extends Player {
 	// illegal, returns false without modifying the internal state of "this"
 	// player. This method allows your opponents to inform you of their moves.
 	public boolean opponentMove(Move m) {
-		System.out.println("OPP TURN: " + turn);
+//		System.out.println("OPP TURN: " + turn);
 		if (this.board.validMove(m, (this.color + 1) % 2)) {
 			this.board = new Board(this.board, m, this.turn);
 			this.turn++;
