@@ -135,8 +135,6 @@ public class Board {
 			int cStartX;
 			int cStartY;
 			if (cStart != null) {
-//				evaluation += connectionNum(cStart, color, 0, -1,
-//						new IntegerArrayList());
 				cStartX = cStart.getX();
 				cStartY = cStart.getY();
 			} else {
@@ -146,8 +144,6 @@ public class Board {
 			int cOppX;
 			int cOppY;
 			if (cOpp != null) {
-//				evaluation -= connectionNum(cOpp, (color + 1) % 2, 0, -1,
-//						new IntegerArrayList());
 				cOppX = cOpp.getX();
 				cOppY = cOpp.getY();
 			} else {
@@ -178,38 +174,9 @@ public class Board {
 		}
 
 		if (this.hasChipsInBothGoals(color) == true) {
-			evaluation += 10;
+			evaluation += 2;
 		}
 		return evaluation;
-	}
-
-	int connectionNum(Chip currChip, int color, int sum, int prevDir,
-			IntegerArrayList chipsVisited) {
-		chipsVisited.add(this.getChipNumber(currChip.getX(), currChip.getY()));
-		int currX = currChip.getX();
-		int currY = currChip.getY();
-		for (Direction d : Direction.values()) {
-			int dx = d.getX();
-			int dy = d.getY();
-			if (prevDir == d.getIndex()) {
-				continue;
-			}
-			for (int i = 1; i < 8; i++) {
-				if (this.inBounds(currX + dx*i, currY + dy*i, color)) {
-					int nextChipNum = this
-							.getChipNumber(currX + dx*i, currY + dy*i);
-					Chip nextChip = this.getChip(nextChipNum);
-					if (nextChip != null && !chipsVisited.contains(nextChipNum)
-							&& nextChip.getColor() == color) {
-						sum = sum
-								+ connectionNum(nextChip, color, chipsVisited.size(),
-										d.getIndex(), new IntegerArrayList(
-												chipsVisited));
-					}
-				}
-			}
-		}
-		return sum;
 	}
 
 	int extend(int x, int y, int mx, int my, int color) {
@@ -439,5 +406,28 @@ public class Board {
 			this.boardLocations[m.x2][m.y2] = stepCurrLoc;
 		}
 		return false;
+	}
+	
+	public String toString(){
+		String str = "";
+		for (int i =0; i<BOARD_SIZE; i++){
+			str= str + "Row i: " + i + " ";
+			for (int j = 0; j<BOARD_SIZE; j++){
+				if (this.boardLocations[j][i]==0){
+					str = str + "X";
+					continue;
+				}
+				if (this.boardLocations[j][i]%2==1){
+					str = str + "W";
+				}
+				else{
+					str=str + "B";
+				}
+				
+			}
+			str += "\n";
+			
+		}
+		return str;
 	}
 }

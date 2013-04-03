@@ -29,7 +29,11 @@ public class MachinePlayer extends Player {
 	// either 0 (black) or 1 (white). (White has the first move.)can y
 	public MachinePlayer(int color, int searchDepth) {
 		this.color = color;
-		this.searchDepth = searchDepth;
+		if (searchDepth < 1) {
+			this.searchDepth = 1;
+		} else {
+			this.searchDepth = searchDepth;
+		}
 		this.board = new Board();
 	}
 
@@ -37,16 +41,11 @@ public class MachinePlayer extends Player {
 	// the internal game board) as a move by "this" player.
 	public Move chooseMove() {
 		Best move = chooseMove(this.turn, -1000000, 1000000, this.searchDepth);
-//		System.out.println("Computer turn: " + turn);
+		// System.out.println("Computer turn: " + turn);
 		Move m = move.m;
 		if (m == null) {
-			MoveArrayList l = this.getMoves(this.color);
-			for (int iter = 0; iter < l.size(); iter++) {
-				m = l.get(iter);
-				if (this.board.validMove(m, turn)) {
-					break;
-				}
-			}
+			m = new Move();
+			m.moveKind = Move.QUIT;
 		}
 		// System.out.println("Score: " + move.score);
 		this.board = new Board(this.board, m, this.turn);
@@ -87,8 +86,8 @@ public class MachinePlayer extends Player {
 								&& (currChip.getX() == 0 || currChip.getY() == 0)) {
 							if (this.board.isValidNetwork(side, 0, -1,
 									currChip, list)) {
-//								System.out.println("Color: " + side
-//										+ " won on turn: " + turn);
+								// System.out.println("Color: " + side
+								// + " won on turn: " + turn);
 								if (side == this.color) {
 									myBest.score = 100000 - 100 * turn;
 								} else {
@@ -132,31 +131,13 @@ public class MachinePlayer extends Player {
 	// illegal, returns false without modifying the internal state of "this"
 	// player. This method allows your opponents to inform you of their moves.
 	public boolean opponentMove(Move m) {
-//		System.out.println("OPP TURN: " + turn);
-		if (this.board.validMove(m, (this.color + 1) % 2)) {
+		// System.out.println("OPP TURN: " + turn);
+		if (this.board.validMove(m, this.turn)) {
 			this.board = new Board(this.board, m, this.turn);
 			this.turn++;
-		} else {
-			return false;
+			return true;
 		}
-		IntegerArrayList list = new IntegerArrayList();
-		int chipIndex;
-		if (this.color == MachinePlayer.BLACK) {
-			chipIndex = 1;
-		} else {
-			chipIndex = 2;
-		}
-		while (chipIndex < 21) {
-			Chip currChip = this.board.getChip(chipIndex);
-			if (currChip != null
-					&& (currChip.getX() == 0 || currChip.getY() == 0)) {
-				if (this.board.isValidNetwork((this.color + 1) % 2, 0, -1,
-						currChip, list)) {
-				}
-			}
-			chipIndex += 2;
-		}
-		return true;
+		return false;
 	}
 
 	// If the Move m is legal, records the move as a move by "this" player
@@ -165,7 +146,7 @@ public class MachinePlayer extends Player {
 	// player. This method is used to help set up "Network problems" for your
 	// player to solve.
 	public boolean forceMove(Move m) {
-		if (this.board.validMove(m, this.color)) {
+		if (this.board.validMove(m, this.turn)) {
 			this.board = new Board(this.board, m, this.turn);
 			this.turn++;
 			return true;
@@ -204,5 +185,9 @@ public class MachinePlayer extends Player {
 			}
 		}
 		return list;
+	}
+
+	public Board getBoard() {
+		return this.board;
 	}
 }
