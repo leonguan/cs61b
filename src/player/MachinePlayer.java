@@ -22,7 +22,7 @@ public class MachinePlayer extends Player {
 	public MachinePlayer(int color) {
 		this.color = color;
 		this.board = new Board();
-		this.searchDepth = 4;
+		this.searchDepth = 3;
 	}
 
 	// Creates a machine player with the given color and search depth. Color is
