@@ -1,5 +1,11 @@
 package player;
 
+/**
+ * 
+ * @author Andrew Liu
+ * @author Matthew Miller
+ *
+ */
 public class Chip {
 	private int x;
 	private int y;
