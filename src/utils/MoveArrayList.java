@@ -8,27 +8,39 @@ public class MoveArrayList extends ArrayList {
 	private Move[] arraylist;
 	private int size;
 
-	// Constructs an ArrayList that is expected to hold up to size number of Moves.
-	// Creates a size-length Move array to hold the Moves added to the ArrayList.
+	/**
+	 * Constructs an ArrayList that is expected to hold up to size number of Moves.
+	 * Creates a size-length Move array to hold the Moves added to the ArrayList.
+	 * @param size
+	 */
 	public MoveArrayList(int size) {
 		this.arraylist = new Move[size];
 		this.size = 0;
 	}
 
-	// A no-arg constructor that defaults to produce a IntegerArrayList of size 10.
+	/**
+	 * A no-arg constructor that defaults to produce a IntegerArrayList of size 10.
+	 */
 	public MoveArrayList() {
 		this(10);
 	}
 
-	// Adds a Move to the end of the MoveArrayList
+	/**
+	 * Adds a Move to the end of the MoveArrayList
+	 * @param m - Move to add to ArrayList
+	 */
 	public void add(Move m) {
 		this.add(this.size(), m);
 	}
 
-	// Adds m to the indicated index in the MoveArrayList
-	// If the MoveArrayList's array is not large enough, a new array of twice the size is constructed
-	// and references of the objects are copied from the original array to the new one.
-	// Throws an IndexOutOfBoundsException if the index is larger than the current size of the MoveArrayList
+	/**
+	 *  Adds m to the indicated index in the MoveArrayList
+	 *  If the MoveArrayList's array is not large enough, a new array of twice the size is constructed
+	 *  and references of the objects are copied from the original array to the new one.
+	 *  Throws an IndexOutOfBoundsException if the index is larger than the current size of the MoveArrayList
+	 * @param index - index to add the Move
+	 * @param m - Move to add
+	 */
 	public void add(int index, Move m) {
 		if (this.size() == this.arraylist.length) {
 			Move[] newArray = new Move[this.arraylist.length * 2];
@@ -47,12 +59,19 @@ public class MoveArrayList extends ArrayList {
 		this.arraylist[index] = m;
 	}
 
-	// Returns the Move at the specified index of the MoveArrayList
+	/**
+	 * Returns the Move at the specified index of the MoveArrayList
+	 * @param index - integer index of the MoveArrayList we wish to retrieve from
+	 * @return Move object at the specified index
+	 */
 	public Move get(int index) {
 		return this.arraylist[index];
 	}
 
-	// Returns the size of the MoveArrayList
+	/**
+	 * Returns the size of the MoveArrayList
+	 * @return size as an int
+	 */
 	public int size() {
 		return this.size;
 	}
