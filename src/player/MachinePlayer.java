@@ -26,7 +26,7 @@ public class MachinePlayer extends Player {
 	}
 
 	// Creates a machine player with the given color and search depth. Color is
-	// either 0 (black) or 1 (white). (White has the first move.)can y
+	// either 0 (black) or 1 (white). (White has the first move.)
 	public MachinePlayer(int color, int searchDepth) {
 		this.color = color;
 		if (searchDepth < 1) {
@@ -41,19 +41,26 @@ public class MachinePlayer extends Player {
 	// the internal game board) as a move by "this" player.
 	public Move chooseMove() {
 		Best move = chooseMove(this.turn, -1000000, 1000000, this.searchDepth);
-		// System.out.println("Computer turn: " + turn);
 		Move m = move.m;
 		if (m == null) {
 			m = new Move();
 			m.moveKind = Move.QUIT;
 		}
-		// System.out.println("Score: " + move.score);
 		this.board = new Board(this.board, m, this.turn);
-		// System.out.println("COMPUTER Score: " + board.eval(this.color));
 		this.turn++;
 		return m;
 	}
 
+	/**
+	 * Iterates through all possible moves
+	 * and uses Minimax search with alpha-beta pruning to determine the
+	 * Best move.
+	 * @param turn - turn number
+	 * @param alpha - alpha value for minimax search algorithm
+	 * @param beta - beta value for minimax search algorithm
+	 * @param depth - search depth
+	 * @return
+	 */
 	public Best chooseMove(int turn, int alpha, int beta, int depth) {
 		Best myBest = new Best();
 		Best reply = new Best();
@@ -86,8 +93,6 @@ public class MachinePlayer extends Player {
 								&& (currChip.getX() == 0 || currChip.getY() == 0)) {
 							if (this.board.isValidNetwork(side, 0, -1,
 									currChip, list)) {
-								// System.out.println("Color: " + side
-								// + " won on turn: " + turn);
 								if (side == this.color) {
 									myBest.score = 100000 - 100 * turn;
 								} else {
@@ -131,7 +136,6 @@ public class MachinePlayer extends Player {
 	// illegal, returns false without modifying the internal state of "this"
 	// player. This method allows your opponents to inform you of their moves.
 	public boolean opponentMove(Move m) {
-		// System.out.println("OPP TURN: " + turn);
 		if (this.board.validMove(m, this.turn)) {
 			this.board = new Board(this.board, m, this.turn);
 			this.turn++;
@@ -154,6 +158,11 @@ public class MachinePlayer extends Player {
 		return false;
 	}
 
+	/**
+	 * Returns a MoveArrayList of all possible Moves
+	 * @param side - refers to the chip color
+	 * @return a MoveArrayList of all possible moves
+	 */
 	private MoveArrayList getMoves(int side) {
 		MoveArrayList list = new MoveArrayList();
 		for (int i = 0; i < Board.BOARD_SIZE; i++) {
@@ -187,6 +196,10 @@ public class MachinePlayer extends Player {
 		return list;
 	}
 
+	/**
+	 * Public accessor that returns the current game board
+	 * @return Board object representing the current game board.
+	 */
 	public Board getBoard() {
 		return this.board;
 	}
