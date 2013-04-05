@@ -22,7 +22,7 @@ Does your program compile without errors?
 Yes.
 
 Have you tested your program on the machines in the Soda CS 61B lab?
-Yes we have (using putty).
+Yes we have via ssh.
 
 Did you successfully implement game tree search?  Did you successfully
 implement alpha-beta pruning?  Are there any limitations on it?  What is the
@@ -33,7 +33,7 @@ Describe your board evaluation function in some detail.
 The board evaluation function attempts to find the best opening spaces
 
 Does your MachinePlayer use any special method of choosing the first few moves?
-No, it just relies on Board.eval(int color)'s return.
+No. The MachinePlayer chooses moves solely based on the "score" given by the eval(int color) method in the Board class.
 
 Is there anything else the graders should know to help them read your project?
 
@@ -60,3 +60,14 @@ You will probably need to change some of your design decisions as you go; be
 sure to modify this file to reflect these changes before you submit your
 project.  Your design of classes and interfaces with be worth about 10% of your
 grade.
+
+------------------List of classes we use----------------------
+
+utils package
+We implement 4 different ArrayList classes: ArrayList, ChipArrayList, IntegerArrayList, and MoveArrayList.
+ArrayList is the superclass of the other 3 ArrayList classes and implements many features of Java's ArrayList data structure.
+Specifically, it implements the add, size, remove, and get methods.
+The various ArrayLists are implemented using an instance variable that points to an array and another instance variable that keeps track of the index
+of the current last object. When a new object is added to the ArrayList, the ArrayList checks whether the current array is large enough, if not,
+it creates a new array and copies all of the items from the current array. As their names suggest, the ChipArrayList, IntegerArrayList, and MoveArrayList
+are ArrayLists whose arrays hold Chip, Integer, and Move objects specifically.

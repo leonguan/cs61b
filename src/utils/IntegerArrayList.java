@@ -1,5 +1,10 @@
 package utils;
 
+/**
+ * Extends the ArrayList class. This subclass is used specifically to hold Chip objects.
+ * @author James Jia
+ *
+ */
 public class IntegerArrayList {
 
 	private Integer[] arraylist;
