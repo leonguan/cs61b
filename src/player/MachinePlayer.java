@@ -2,25 +2,25 @@
 
 package player;
 
-import utils.IntegerArrayList;
-import utils.MoveArrayList;
-
 /**
  * An implementation of an automatic Network player. Keeps track of moves made
  * by both players. Can select a move for itself.
+ * 
+ * @author James Jia
  */
 public class MachinePlayer extends Player {
-	final static int BLACK = 0;
-	final static int WHITE = 1;
-	private int color;
-	private int searchDepth;
+	final static byte BLACK = 0;
+	final static byte WHITE = 1;
+	private byte color;
+	private byte searchDepth;
 	private Board board;
-	private int turn = 1;
+	private byte turn = 1;
+	private Move[] allAddMoves = new Move[64];
 
 	// Creates a machine player with the given color. Color is either 0 (black)
 	// or 1 (white). (White has the first move.)
 	public MachinePlayer(int color) {
-		this.color = color;
+		this.color = (byte) color;
 		this.board = new Board();
 		this.searchDepth = 3;
 	}
@@ -28,90 +28,75 @@ public class MachinePlayer extends Player {
 	// Creates a machine player with the given color and search depth. Color is
 	// either 0 (black) or 1 (white). (White has the first move.)
 	public MachinePlayer(int color, int searchDepth) {
-		this.color = color;
-		if (searchDepth < 1) {
-			this.searchDepth = 1;
-		} else {
-			this.searchDepth = searchDepth;
+		this(color);
+		if (searchDepth >= 1) {
+			this.searchDepth = (byte) searchDepth;
 		}
-		this.board = new Board();
 	}
 
 	// Returns a new move by "this" player. Internally records the move (updates
 	// the internal game board) as a move by "this" player.
 	public Move chooseMove() {
-		Best move = chooseMove(this.turn, -1000000, 1000000, this.searchDepth);
+		Best move = findBest(this.turn, -1000000, 1000000, this.searchDepth);
 		Move m = move.m;
 		if (m == null) {
 			m = new Move();
 			m.moveKind = Move.QUIT;
 		}
-		this.board = new Board(this.board, m, this.turn);
+		this.board.addMove(m, this.turn);
 		this.turn++;
 		return m;
 	}
 
-	/**
-	 * Iterates through all possible moves
-	 * and uses Minimax search with alpha-beta pruning to determine the
-	 * Best move.
-	 * @param turn - turn number
-	 * @param alpha - alpha value for minimax search algorithm
-	 * @param beta - beta value for minimax search algorithm
-	 * @param depth - search depth
-	 * @return
-	 */
-	public Best chooseMove(int turn, int alpha, int beta, int depth) {
+	private Best findBest(byte turn, int alpha, int beta, byte depth) {
 		Best myBest = new Best();
 		Best reply = new Best();
-		int side = turn % 2;
-		if (side == this.color) {
-			myBest.score = alpha;
-		} else {
-			myBest.score = beta;
-		}
-
-		MoveArrayList moves = this.getMoves(side);
+		byte side = (byte) (turn % 2);
+		byte otherSide = (byte) ((side + 1) % 2);
 		int i = 0;
-		while (i < moves.size()) {
-			Move m = moves.get(i);
+		Move[] moves = getMoves(side);
+		Move m;
+		if (side == this.color)
+			myBest.score = alpha;
+		else
+			myBest.score = beta;
+		while (i < moves.length) {
+			m = moves[i];
+			if (m == null) {
+				i++;
+				continue;
+			}
 			if (this.board.validMove(m, turn)) {
-				Board currBoard = this.board;
-				Board afterMove = new Board(this.board, m, turn);
-				this.board = afterMove;
-				int chipIndex;
-				if (side == MachinePlayer.BLACK) {
-					chipIndex = 2;
-				} else {
-					chipIndex = 1;
-				}
-				if (this.board.hasChipsInBothGoals(side)) {
-					while (chipIndex < 21) {
-						IntegerArrayList list = new IntegerArrayList();
-						Chip currChip = this.board.getChip(chipIndex);
-						if (currChip != null
-								&& (currChip.getX() == 0 || currChip.getY() == 0)) {
-							if (this.board.isValidNetwork(side, 0, -1,
-									currChip, list)) {
-								if (side == this.color) {
-									myBest.score = 100000 - 100 * turn;
-								} else {
-									myBest.score = -100000 + 100 * turn;
-								}
-								myBest.m = m;
-								return myBest;
-							}
-						}
-						chipIndex += 2;
+				this.board.addMove(m, turn);
+				if (this.board.isValidNetwork(side)) {
+					// System.out.println("SIDE: "+side);
+					if (side == this.color) {
+						myBest.score = 100000 - 100 * turn;
+					} else {
+						myBest.score = -100000 + 100 * turn;
 					}
+					myBest.m = m;
+					this.board.removeMove(m, turn);
+					return myBest;
+				}
+				if (this.board.isValidNetwork(otherSide)) {
+					if (otherSide == this.color) {
+						myBest.score = 100000 - 100 * turn;
+					} else {
+						myBest.score = -100000 + 100 * turn;
+					}
+					myBest.m = m;
+					this.board.removeMove(m, turn);
+					return myBest;
 				}
 				if (depth == 1) {
 					reply.m = m;
 					reply.score = this.board.eval(this.color);
 				} else {
-					reply = chooseMove(turn + 1, alpha, beta, depth - 1);
+					reply = findBest((byte) (turn + 1), alpha, beta,
+							(byte) (depth - 1));
 				}
-				this.board = currBoard;
+				this.board.removeMove(m, turn);
 				if (side == this.color && reply.score > myBest.score) {
 					myBest.m = m;
 					myBest.score = reply.score;
@@ -122,13 +107,90 @@ public class MachinePlayer extends Player {
 					myBest.score = reply.score;
 					beta = reply.score;
 				}
-				if (alpha >= beta) {
+				if (alpha >= beta)
 					return myBest;
-				}
 			}
-			i++;
+			i += 1;
 		}
 		return myBest;
+	}
+
+	private Move[] getMoves(byte side) {
+		Move[] results = null;
+		Move m;
+		int count = 0;
+		byte[][] chips = new byte[Board.MAX_CHIPS / 2][2];
+		boolean breakOut = false;
+		byte chipsFound;
+		boolean shouldAdd = this.board.shouldAdd(this.turn);
+		if (shouldAdd) {
+			if (this.allAddMoves[0] != null) {
+				return this.allAddMoves;
+			}
+		} else {
+			results = new Move[Board.MAX_CHIPS / 2 * Board.BOARD_SIZE
+					* Board.BOARD_SIZE];
+		}
+		for (byte i = 0; i < Board.BOARD_SIZE; i++) {
+			for (byte j = 0; j < Board.BOARD_SIZE; j++) {
+				if (shouldAdd) {
+					m = new Move();
+					m.x1 = i;
+					m.y1 = j;
+					m.moveKind = Move.ADD;
+					this.allAddMoves[count] = m;
+					count += 1;
+				} else {
+					chipsFound = 0;
+					if (chips[0][0] != 0 || chips[0][1] != 0) {
+						for (byte x = 0; x < Board.MAX_CHIPS / 2; x++) {
+							m = new Move();
+							m.x1 = i;
+							m.y1 = j;
+							m.x2 = chips[x][0];
+							m.y2 = chips[x][1];
+							m.moveKind = Move.STEP;
+							results[count] = m;
+							count += 1;
+						}
+					} else {
+						for (byte y = 0; y < Board.BOARD_SIZE; y++) {
+							for (byte x = 0; x < Board.BOARD_SIZE; x++) {
+								if (this.board.isCornerOutOfBounds(x, y, side)) {
+									continue;
+								}
+								if (this.board.fetchValue(x, y) != 0
+										&& this.board.fetchValue(x, y) % 2 == side) {
+									m = new Move();
+									m.x1 = i;
+									m.y1 = j;
+									m.x2 = x;
+									m.y2 = y;
+									m.moveKind = Move.STEP;
+									results[count] = m;
+									chips[chipsFound][0] = x;
+									chips[chipsFound][1] = y;
+
+									count += 1;
+									chipsFound += 1;
+									if (chipsFound == Board.MAX_CHIPS / 2) {
+										breakOut = true;
+									}
+								}
+								if (breakOut)
+									break;
+							}
+							if (breakOut)
+								break;
+						}
+					}
+				}
+			}
+		}
+		if (shouldAdd) {
+			return this.allAddMoves;
+		}
+		return results;
 	}
 
 	// If the Move m is legal, records the move as a move by the opponent
@@ -137,7 +199,7 @@ public class MachinePlayer extends Player {
 	// player. This method allows your opponents to inform you of their moves.
 	public boolean opponentMove(Move m) {
 		if (this.board.validMove(m, this.turn)) {
-			this.board = new Board(this.board, m, this.turn);
+			this.board.addMove(m, this.turn);
 			this.turn++;
 			return true;
 		}
@@ -151,56 +213,15 @@ public class MachinePlayer extends Player {
 	// player to solve.
 	public boolean forceMove(Move m) {
 		if (this.board.validMove(m, this.turn)) {
-			this.board = new Board(this.board, m, this.turn);
+			this.board.addMove(m, this.turn);
 			this.turn++;
 			return true;
 		}
 		return false;
 	}
 
-	/**
-	 * Returns a MoveArrayList of all possible Moves
-	 * @param side - refers to the chip color
-	 * @return a MoveArrayList of all possible moves
-	 */
-	private MoveArrayList getMoves(int side) {
-		MoveArrayList list = new MoveArrayList();
-		for (int i = 0; i < Board.BOARD_SIZE; i++) {
-			for (int j = 0; j < Board.BOARD_SIZE; j++) {
-				if (this.board.shouldAdd(this.turn)) {
-					Move m = new Move();
-					m.x1 = i;
-					m.y1 = j;
-					m.moveKind = Move.ADD;
-					list.add(m);
-				} else {
-					int iter = side;
-					if (iter == 0) {
-						iter = 2;
-					}
-					while (iter < this.board.getTotalChips()) {
-						Chip temp = this.board.getChip(iter);
-						Move m = new Move();
-						m.x1 = i;
-						m.y1 = j;
-						m.moveKind = Move.STEP;
-						m.x2 = temp.getX();
-						m.y2 = temp.getY();
-						list.add(m);
-						iter += 2;
-					}
-
-				}
-			}
-		}
-		return list;
-	}
-
-	/**
-	 * Public accessor that returns the current game board
-	 * @return Board object representing the current game board.
-	 */
 	public Board getBoard() {
 		return this.board;
 	}
+
 }
