@@ -1,0 +1,173 @@
+GRADER
+
+Name of student running submit: James Jia
+Login of student running submit: cs61b-xi
+
+Second team member's name: Zeyu Liu
+Second team member's login: cs61b-py
+
+Third team member's name (if any): Matthew Miller
+Third team member's login: cs61b-fi
+
+IMPORTANT:  Once you've submitted Project 2 once, the same team member should
+submit always.  If a different teammate must submit, inform cs61b@cory.eecs of
+all the details.  Include a complete list of team members, and let us know
+which submission you want graded.
+
+If you've submitted your project once, or even written a substantial amount of
+code together, you may not change partners without the permission of the
+instructor.
+==============================================================================
+Does your program compile without errors?
+Yes
+
+Have you tested your program on the machines in the Soda CS 61B lab?
+Remote login only
+
+Did you successfully implement game tree search?  Did you successfully
+implement alpha-beta pruning?  Are there any limitations on it?  What is the
+default number of search levels set by the one-parameter MachinePlayer
+constructor?
+Yes we did successfully implement game tree search and alpha-beta pruning.
+The only limitation is when someone passes in a search depth of less than one into the constructor.  If left as is, the game tree search would never end.  Thus, we restrict searchDepth to at least 1.
+
+Describe your board evaluation function in some detail.
+Our board evaluation function returns higher values for pieces that are more centered on the board or if they are in the end zone(center preference still occurs in the end zone).  It is during the minimax that a board is checked for having a network.
+
+Does your MachinePlayer use any special method of choosing the first few moves?
+No, just the evaluation and minimax functions.
+
+Is there anything else the graders should know to help them read your project?
+The implementation uses a BOARD_SIZExBOARD_SIZE int array.  The 4 corners of the board are not used by the players but are used by the program.  Each corner corresponds to one of the end zones and keeps track of how many chips are there.  This is to short circuit isValidNetwork if there aren’t chips in both end zones for a single player. 
+
+
+Describe the classes, modules, and interfaces you designed before and while you
+implemented the project.  Your description should include:
+  -  A list of the classes your program uses.
+  -  A list of each of the "modules" used in or by MachinePlayer, similar to
+     the list in the "Teamwork" section of the README (but hopefully more
+     detailed).
+  -  For each module, list the class(es) the module is implemented in.
+  -  For each module, say which of your team members implemented it.
+  -  For each module, describe its interface--specifically, the prototype and
+     behavior of each method that is available for external callers (outside
+     the module) to call.  Don't include methods that are only meant to be
+     called from within the module.
+
+     For each method, provide (1) a method prototype and (2) a complete,
+     unambiguous description of the behavior of the method/module.  This
+     description should also appear before the method in your code's comments.
+
+You will probably need to change some of your design decisions as you go; be
+sure to modify this file to reflect these changes before you submit your
+project.  Your design of classes and interfaces with be worth about 10% of your
+grade.
+Classes:
+- All in Player package:
+-- Board.java
+-- MachinePlayer.java
+-- Best.java
+-- Direction.java
+-- Move.java
+-- Player.java
+
+Modules:
+- Move Validity:
+-- Created By: Zeyu Liu
+-- Classes That Implement The Module: Board.java
+-- Accessible Methods: 
+boolean inBounds(byte,byte,byte)
+Checks whether or not a theoretical chip of a specified color and (x,y) position is within bounds.
+@param x - x coordinate of position
+@param y - y coordinate of position
+@return true if position is in the boundaries.
+
+boolean inCornerOutOfBounds(byte,byte,byte)
+Checks whether a (x,y) position is out of bounds for a certain colored
+Chip or if it is a corner position on the Board
+@param x - x coordinate of the chip
+@param y - y coordinate of the chip
+@param color - color of the chip
+@return true if position is in the corner or out of bounds
+
+-- Description:
+Check if move is outside the game board boundaries,  this includes checking that it is not in a corner and that it is not in an opponent’s end zone.  If not check if it is trying to place a piece on top of another piece.  Afterwards check to see if placing this piece there would cause three chips of the same color to be in a 3x3 area.  This step is accomplished by recursing through squares in adjacent locations to see if they find another chip as well.  If step function also check if there is a piece at the location that you are starting from.  Also check if the piece you are trying to move is your color.
+
+- Move Generation:
+-- Created By: Zeyu Liu
+-- Classes That Implement The Module: MachinePlayer.java
+-- Accessible Methods:
+Move[] getMoves(byte)
+Gets all the moves for a particular side. If the moves should be
+Move.ADD, check to see if this.allAddMoves already contains an array of
+all the possible add moves. If not, populate this.allAddMoves for later
+turns. If the moves are Move.STEP, calculate all the possible step moves
+and return the Move[].
+@param side - color of the current player
+@return an array containing all the possible moves
+
+-- Description:
+When generating an add move for the first time all locations on the board are valid.  Thus we generate a move that is to place in every possible location and store that in an array outside of the function.  Every call to this method after this that is trying to fetch add moves will just be returned this array instead preventing reevaluation of a constant space.  If it is a step move the function iterates through all 64 locations. At the very first location it cycles through the rest of the board first before continuing.  The point of this is to find the location of the 10 chips of the color of the player who is about to move.  This is then stored within the function in an array.  Afterwards for all 64 locations generate a move from all 10 chip locations to that specific location.  
+
+- Finding Connections:
+-- Created By: Matthew Miller
+-- Classes That Implement The Module: Board.java
+-- Accessible Methods:
+byte[] extend(byte, byte, byte, byte, byte) 
+Given a particular position and a direction coordinate, iterates in that
+direction until out of bounds or "hits" a chip. If chip found is of the
+same color, return a byte array with information about the chip,
+otherwise return a byte array of all 0s.
+ @param x - x coordinate of the position
+ @param y - y coordinate of the position
+@param dx - x coordinate of direction
+@param dy - y coordinate of direction
+@param color - color of the current chip at position x,y
+@return a byte array where first index is the index of the chip, second
+is x coordinate of chip, third is y coordinate of chip
+
+-- Description:
+From a given location iterate outwards sequentially through the 8 directions stored in the Direction enum.  While iterating if you hit another chip return the number of the chip that was found along with the x and y coordinates of that chip or if the location goes out of bounds return an array containing all 0s.
+
+- Finding Networks:
+-- Created By: Matthew Miller
+-- Classes That Implement The Module: Board.java
+-- Accessible Methods:
+boolean isValidNetwork(byte)
+Cycles through the end zones of a particular player and calls
+ValidNetworkRecurse to determine whether there is a valid network that
+stems from a particular chip in the end zone.
+@param color - the color of the player that the method is finding a network for
+@return true if there is a valid network for specified color
+
+-- Description:
+Start by checking whether both end zones for a given player have chips.  This is accomplished through the 4 corners wihch are updated on every add or step move through adjustChecks.  Start from one of the end zones and cycle through every chip there.  From each chip recursively go to every single chip that it is connected to of the same color that has not been visited by that recursive path.  The recursion ends when it cannot find a chip that it has not visited before or if it ends up on a chip in the end zone opposite of where it started.  In this case it checks if the length of the path that it took is at least 6.  If so it returns confirming that it has found a path which short circuits every recursive call all the way back to the start or it just goes back one recursive call if it did not find a valid network.  Finding Connections is a subset of this module.  A boolean array is used to store whether a chip has been visited before.  We hash the chip numbers by doing (chip number - 1)%2 in order to generate the indexes of the array since these will always be unique for a given color.
+
+- Evaluating Board:
+-- Created By: James Jia
+--Classes That Implement The Module: Board.java
+-- Accessible Methods:
+int eval(byte)
+Heuristic function that returns an integer that determines how
+advantageous the board is for a particular player.
+@param color  The color of the player. If color is odd, the method evaluates
+	 the board for black. If color is even, the method evaluates
+	the board for white.
+@return an integer that determines how advantageous the board is for a
+	player. A greater integer means it is more advantageous for the
+	player of specified color.
+
+-- Description:
+The board iterates through every position on the board.  The player loses points based on the position of their pieces and gains points based on the position of their opponents pieces.  The player wants as high a score as possible.  A player loses more points the farther their pieces are from the center of the board.  Inversely the player gains more points the farther their opponent is from the center.  This ends up giving the highest board evaluations for when the player is playing in the center and the opponent is playing away from it.  The other calculation that is calculated is adding points for a piece being in the end zone.  However, this is usually is less than the value of playing in an endzone.
+
+- Minimax/Alpha-beta Pruning
+-- Created By: James Jia
+-- Classes That Implement The Module: MachinePlayer.java
+-- Accessible Methods:
+Move chooseMove()
+	 Returns a new move by "this" player. Internally records the move (updates the internal 
+game board) as a move by "this" player.
+	 @return the move chosen
+
+-- Description:	
+The machine player generates a game tree of all the possible moves made up to a certain depth using depth first search and maximizes the minimum gain starting from a particular board position.  It implements alpha-beta pruning in order to speed up the process by pruning off particular subtrees that it knows will not be chosen.

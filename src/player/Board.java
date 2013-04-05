@@ -100,8 +100,9 @@ public class Board {
 	 *            the current turn in the game
 	 */
 	protected void removeMove(Move m, byte turn) {
-		if (m.moveKind == Move.QUIT)
+		if (m.moveKind == Move.QUIT) {
 			return;
+		}
 		if (m.moveKind == Move.ADD) {
 			board[m.x1][m.y1] = 0;
 			adjustChecks(turn, (byte) m.x1, (byte) m.y1, (byte) -1);
@@ -233,21 +234,25 @@ public class Board {
 			byte prevDir, byte x, byte y, boolean[] nodesVisited) {
 		byte[] neighborChip = new byte[3];
 		boolean valid;
-		if (prevDir != -1 && (x == 0 || y == 0))
+		if (prevDir != -1 && (x == 0 || y == 0)) {
 			return false;
+		}
 		if (x == BOARD_GOAL || y == BOARD_GOAL) {
-			if (length < 5)
+			if (length < 5) {
 				return false;
+			}
 			return true;
 		}
 		for (Direction d : Direction.values()) {
-			if (prevDir == d.getIndex())
+			if (prevDir == d.getIndex()) {
 				continue;
+			}
 			neighborChip = extend((byte) (x + d.getX()), (byte) (y + d.getY()),
 					d.getX(), d.getY(), color);
 			if (neighborChip[0] == 0 || neighborChip[0] % 2 != color
-					|| (neighborChip[1] == 0 && neighborChip[2] == 0))
+					|| (neighborChip[1] == 0 && neighborChip[2] == 0)) {
 				continue;
+			}
 			if (!nodesVisited[(neighborChip[0] - 1) / 2]) {
 				nodesVisited[(neighborChip[0] - 1) / 2] = true;
 				valid = isValidNetworkRecurse(color, (byte) (length + 1),
@@ -431,11 +436,13 @@ public class Board {
 			board[m.x2][m.y2] = 0;
 		}
 		board[m.x1][m.y1] = (byte) (color + 2);
-		if (hasTwoChipsRecurse((byte) m.x1, (byte) m.y1, color, (byte) 1))
+		if (hasTwoChipsRecurse((byte) m.x1, (byte) m.y1, color, (byte) 1)) {
 			result = true;
+		}
 		board[m.x1][m.y1] = 0;
-		if (m.moveKind == Move.STEP)
+		if (m.moveKind == Move.STEP) {
 			board[m.x2][m.y2] = stepCurrLoc;
+		}
 		return result;
 	}
 
@@ -469,8 +476,9 @@ public class Board {
 						}
 						if (depth != 0) {
 							if (hasTwoChipsRecurse((byte) (x + i),
-									(byte) (y + j), color, (byte) (depth - 1)))
+									(byte) (y + j), color, (byte) (depth - 1))) {
 								return true;
+							}
 						}
 					}
 				}

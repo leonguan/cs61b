@@ -65,8 +65,11 @@ public class MachinePlayer extends Player {
 	}
 
 	/**
-	 * Iterates through all possible moves and uses Minimax search with
-	 * alpha-beta pruning to determine the Best move.
+	 * findBest generates a game tree of all the possible moves made up to a
+	 * certain depth using depth first search and maximizes the minimum gain
+	 * starting from a particular board position. It implements alpha-beta
+	 * pruning in order to speed up the process by pruning off particular
+	 * subtrees that it knows will not be chosen.
 	 * 
 	 * @param turn
 	 *            turn number
@@ -86,10 +89,11 @@ public class MachinePlayer extends Player {
 		int i = 0;
 		Move[] moves = getMoves(side);
 		Move m;
-		if (side == this.color)
+		if (side == this.color) {
 			myBest.score = alpha;
-		else
+		} else {
 			myBest.score = beta;
+		}
 		while (i < moves.length) {
 			m = moves[i];
 			if (m == null) {
@@ -99,7 +103,6 @@ public class MachinePlayer extends Player {
 			if (this.board.validMove(m, turn)) {
 				this.board.addMove(m, turn);
 				if (this.board.isValidNetwork(side)) {
-					// System.out.println("SIDE: "+side);
 					if (side == this.color) {
 						myBest.score = 100000 - 100 * turn;
 					} else {
@@ -137,8 +140,9 @@ public class MachinePlayer extends Player {
 					myBest.score = reply.score;
 					beta = reply.score;
 				}
-				if (alpha >= beta)
+				if (alpha >= beta) {
 					return myBest;
+				}
 			}
 			i += 1;
 		}
@@ -218,11 +222,13 @@ public class MachinePlayer extends Player {
 										breakOut = true;
 									}
 								}
-								if (breakOut)
+								if (breakOut) {
 									break;
+								}
 							}
-							if (breakOut)
+							if (breakOut) {
 								break;
+							}
 						}
 					}
 				}
