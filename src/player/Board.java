@@ -1,22 +1,18 @@
 package player;
 
 import utils.IntegerArrayList;
-
+/**
+ * 
+ * @author Andrew Liu
+ * @author James Jia
+ * @author Matthew Miller
+ *
+ */
 public class Board {
 	final static int BOARD_SIZE = 8;
-	// Don't need anymore because we have chips. Will just set to null
-	// final static int NONE = null;
 	private Chip[] chips;
 	private int TOTAL_CHIPS = 20;
 	private int[][] boardLocations;
-
-	// private Chip[][] array;
-
-	// Changed the representation of simply keeping track of count
-	// To keeping track of the actual pieces on the board
-	// private int blackPieces;
-	// private ChipArrayList whitePieces;
-	// private ChipArrayList blackPieces;
 
 	public Board() {
 		this.chips = new Chip[TOTAL_CHIPS + 1];

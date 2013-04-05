@@ -1,7 +1,7 @@
 package utils;
 import player.Move;
 /**
- * Extends the ArrayList class. This subclass is used specifically to hold Integer objects.
+ * Extends the ArrayList class. This subclass is used specifically to hold Move objects.
  * @author Matthew Miller
  */
 public class MoveArrayList extends ArrayList {
