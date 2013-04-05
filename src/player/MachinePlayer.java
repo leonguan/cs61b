@@ -17,16 +17,28 @@ public class MachinePlayer extends Player {
 	private byte turn = 1;
 	private Move[] allAddMoves = new Move[64];
 
-	// Creates a machine player with the given color. Color is either 0 (black)
-	// or 1 (white). (White has the first move.)
+	/**
+	 * Creates a machine player with the given color. Color is either 0 (black)
+	 * or 1 (white). (White has the first move.)
+	 * 
+	 * @param color
+	 *            color of the player
+	 */
 	public MachinePlayer(int color) {
 		this.color = (byte) color;
 		this.board = new Board();
 		this.searchDepth = 3;
 	}
 
-	// Creates a machine player with the given color and search depth. Color is
-	// either 0 (black) or 1 (white). (White has the first move.)
+	/**
+	 * Creates a machine player with the given color and search depth. Color is
+	 * either 0 (black) or 1 (white). (White has the first move.)
+	 * 
+	 * @param color
+	 *            color of the player
+	 * @param searchDepth
+	 *            search depth of the player
+	 */
 	public MachinePlayer(int color, int searchDepth) {
 		this(color);
 		if (searchDepth >= 1) {
@@ -34,8 +46,12 @@ public class MachinePlayer extends Player {
 		}
 	}
 
-	// Returns a new move by "this" player. Internally records the move (updates
-	// the internal game board) as a move by "this" player.
+	/**
+	 * Returns a new move by "this" player. Internally records the move (updates
+	 * the internal game board) as a move by "this" player.
+	 * 
+	 * @return the move chosen
+	 */
 	public Move chooseMove() {
 		Best move = findBest(this.turn, -1000000, 1000000, this.searchDepth);
 		Move m = move.m;
@@ -48,6 +64,20 @@ public class MachinePlayer extends Player {
 		return m;
 	}
 
+	/**
+	 * Iterates through all possible moves and uses Minimax search with
+	 * alpha-beta pruning to determine the Best move.
+	 * 
+	 * @param turn
+	 *            turn number
+	 * @param alpha
+	 *            alpha value for minimax search algorithm
+	 * @param beta
+	 *            beta value for minimax search algorithm
+	 * @param depth
+	 *            search depth
+	 * @return a Best containing the most optimal move
+	 */
 	private Best findBest(byte turn, int alpha, int beta, byte depth) {
 		Best myBest = new Best();
 		Best reply = new Best();
@@ -115,6 +145,17 @@ public class MachinePlayer extends Player {
 		return myBest;
 	}
 
+	/**
+	 * Gets all the moves for a particular side. If the moves should be
+	 * Move.ADD, check to see if this.allAddMoves already contains an array of
+	 * all the possible add moves. If not, populate this.allAddMoves for later
+	 * turns. If the moves are Move.STEP, calculate all the possible step moves
+	 * and return the Move[].
+	 * 
+	 * @param side
+	 *            color of the current player
+	 * @return an array containing all the possible moves
+	 */
 	private Move[] getMoves(byte side) {
 		Move[] results = null;
 		Move m;
@@ -193,10 +234,12 @@ public class MachinePlayer extends Player {
 		return results;
 	}
 
-	// If the Move m is legal, records the move as a move by the opponent
-	// (updates the internal game board) and returns true. If the move is
-	// illegal, returns false without modifying the internal state of "this"
-	// player. This method allows your opponents to inform you of their moves.
+	/**
+	 * If the Move m is legal, records the move as a move by the opponent
+	 * (updates the internal game board) and returns true. If the move is
+	 * illegal, returns false without modifying the internal state of "this"
+	 * player. This method allows your opponents to inform you of their moves.
+	 */
 	public boolean opponentMove(Move m) {
 		if (this.board.validMove(m, this.turn)) {
 			this.board.addMove(m, this.turn);
@@ -206,11 +249,13 @@ public class MachinePlayer extends Player {
 		return false;
 	}
 
-	// If the Move m is legal, records the move as a move by "this" player
-	// (updates the internal game board) and returns true. If the move is
-	// illegal, returns false without modifying the internal state of "this"
-	// player. This method is used to help set up "Network problems" for your
-	// player to solve.
+	/**
+	 * If the Move m is legal, records the move as a move by "this" player
+	 * (updates the internal game board) and returns true. If the move is
+	 * illegal, returns false without modifying the internal state of "this"
+	 * player. This method is used to help set up "Network problems" for your
+	 * player to solve.
+	 */
 	public boolean forceMove(Move m) {
 		if (this.board.validMove(m, this.turn)) {
 			this.board.addMove(m, this.turn);
@@ -220,6 +265,11 @@ public class MachinePlayer extends Player {
 		return false;
 	}
 
+	/**
+	 * Getter method for Machine Player's board. For testing purposes
+	 * 
+	 * @return the current board
+	 */
 	public Board getBoard() {
 		return this.board;
 	}
