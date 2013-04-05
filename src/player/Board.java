@@ -355,11 +355,11 @@ public class Board {
 	}
 
 	/**
-	 * 
-	 * @param x
-	 * @param y
-	 * @param color
-	 * @return
+	 * Checks whether a (x,y) position is out of bounds for a certain colored Chip or if it is a corner position on the Board
+	 * @param x - x position
+	 * @param y - y position
+	 * @param color - color of Chip
+	 * @return bool the follows rules described above. Returns true if out of bounds for the Chip color or if it is a corner position.
 	 */
 	boolean isCornerOrOutOfBounds(int x, int y, int color) {
 		boolean pos1OutBounds = x < 0 || x >= BOARD_SIZE || y < 0
@@ -371,6 +371,11 @@ public class Board {
 		return pos1OutBounds || isCorner;
 	}
 
+	/**
+	 * Checks whether or not a color/side has at least one chip in each goal area.
+	 * @param color - color of the chip/team we're checking.
+	 * @return - returns true iff the color/team has at least one chip in each goal area.
+	 */
 	boolean hasChipsInBothGoals(int color) {
 		boolean hasChipOnFirstSide = false;
 		boolean hasChipOnSecondSide = false;
@@ -397,13 +402,12 @@ public class Board {
 	}
 
 	/***
-	 * Returns true if there are already two chips in a row in the vicinity of a
-	 * move.
+	 * Returns true if there are already two chips in a row in the vicinity of
+	 * where the Chip will be placed in a given move.
 	 * 
-	 * @param m
-	 * @param color
-	 *            - color of the chip that will be placed by Move m.
-	 * @return
+	 * @param m - given move
+	 * @param color - color of the chip that will be placed by Move m.
+	 * @return true if the location where the chip will be placed already has two chips of the same color in the vicinity.
 	 */
 	private boolean hasTwoChips(Move m, int turn) {
 		int stepCurrLoc = 0;
@@ -454,6 +458,9 @@ public class Board {
 		return false;
 	}
 	
+	/**
+	 * For testing purposes
+	 */
 	public String toString(){
 		String str = "";
 		for (int i =0; i<BOARD_SIZE; i++){
