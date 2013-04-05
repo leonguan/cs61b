@@ -2,6 +2,12 @@ package player;
 
 import utils.IntegerArrayList;
 /**
+ * The Board class represents the 8x8 Board on which the game Networks is played.
+ * It contains a 2D int array that represents the 60 different locations on the Board. The corner locations are invalid.
+ * It contains a Chip[] that holds the Chips that are on the Board. In the Chip[], index 0 does not hold anything and represents "non-Chips"
+ * Afterwards, each even index holds a black Chip and each odd index holds a white Chip.
+ * There can be at most 20 distinct Chips on the Board at any one time. There can also be multiple copies of a "non-Chip"
+ * which represents the lack of a colored Chip.
  * 
  * @author Andrew Liu
  * @author James Jia
@@ -14,16 +20,22 @@ public class Board {
 	private int TOTAL_CHIPS = 20;
 	private int[][] boardLocations;
 
+	// A 0-arg constructor that produces a blank board with no chips placed.
+	// All Boards are BOARD_SIZE x BOARD_SIZE and hold a total of TOTAL_CHIPS+1 Chips.
 	public Board() {
 		this.chips = new Chip[TOTAL_CHIPS + 1];
 		this.boardLocations = new int[BOARD_SIZE][BOARD_SIZE];
 	}
 
-	// Given a board and a move, produces a new board
+	/**This constructor takes in a Board object, a Move object, and the turn number
+	 * and returns a new Board object that results in making the specified Move on the specified Board.
+	 * Each new Board object contains its own copies of Chips.
+	 * @param b - The current board that the new board will be based off of.
+	 * @param m - A specified Move to make on the Board
+	 * @param turn - the turn number
+	 */
 	public Board(Board b, Move m, int turn) {
 		this();
-		// Needs a new ChipArrayList to keep track of the black and white pieces
-		// on this board
 		for (int i = 0; i < BOARD_SIZE; i++) {
 			for (int j = 0; j < BOARD_SIZE; j++) {
 				this.boardLocations[i][j] = b.boardLocations[i][j];
@@ -38,14 +50,18 @@ public class Board {
 	}
 
 	/**
-	 * ChipArrayList whitePieces() { return this.whitePieces; }
-	 * 
-	 * ChipArrayList blackPieces() { return this.blackPieces; }
+	 * @return The 2D int array that represents the different locations on the current Board object
 	 */
 	int[][] getLocations() {
 		return this.boardLocations;
 	}
 
+	/**
+	 * Sets the specified x,y location on the current Board to a given value.
+	 * @param x - The x coordinate on the current Board object
+	 * @param y - The y coordinate on the current Board object
+	 * @param value - sets the location on the board to the specified value.
+	 */
 	void setLocation(int x, int y, int value) {
 		this.boardLocations[x][y] = value;
 		return;

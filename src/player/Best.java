@@ -23,6 +23,7 @@ public class Best {
 	}
 	// Returns a stringified representation for a Best object.
 	// Mainly used for testing purposes.
+	// Returns The score and move as part of a String.
 	public String toString(){
 		return "Score: " + score + " move: " + m.toString();
 	}
