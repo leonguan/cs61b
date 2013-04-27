@@ -21,6 +21,7 @@ public class Kruskal {
 
 		LinkedQueue q = new LinkedQueue();
 
+		// Get all of the vertices
 		Object[] vertices = g.getVertices();
 		for (int i = 0; i < vertices.length; i++) {
 
@@ -97,7 +98,7 @@ public class Kruskal {
 			while (!qIn.isEmpty()) {
 				
 				// I AM GETTING AN ERROR HERE
-				int k = ((Comparable<Comparable>) ((KruskalEdge) qIn.front()).getWeight()).compareTo(pivot);
+				int k = ((Comparable) ((KruskalEdge) qIn.front()).getWeight()).compareTo(pivot);
 				if (k < 0) {
 					qSmall.enqueue(qIn.dequeue());
 				} else if (k == 0) {
