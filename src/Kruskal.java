@@ -16,13 +16,16 @@ public class Kruskal {
 	 * of the WUGraph g.  The original WUGraph g is NOT changed.
 	 */
 	public static WUGraph minSpanTree(WUGraph g) {
-
+		// Step 1: Create a new graph T having the same vertices as G, but no edges (yet).
+	    // Upon completion, T will be the minimum spanning tree of G.
 		WUGraph t = new WUGraph();
 
 		LinkedQueue q = new LinkedQueue();
 
 		// Get all of the vertices
 		Object[] vertices = g.getVertices();
+		
+		// This is a second for loop which means it would run in O(2*|V|), which is fine
 		for (int i = 0; i < vertices.length; i++) {
 
 			// 1. Add vertices to T
@@ -32,14 +35,19 @@ public class Kruskal {
 			Neighbors neighbors = g.getNeighbors(vertices[i]);
 			Object[] connected = neighbors.neighborList;
 			int[] weights = neighbors.weightList;
+			
+			// For each vertex, I get all of its neighbors and create an edge for each
+			// Why do we use a LinkedQueue?
+			// When we add the edge to our DS, we should sort while adding?
 			for (int j = 0; j < connected.length; j++) {
 				KruskalEdge edge = new KruskalEdge(vertices[i], connected[j], weights[j]);
 				try {
+					// What is the running time of find? It runs in n time for a linkedqueue of size n
 					if (q.isEmpty() || !q.find(edge)) {
 						q.enqueue(edge);
 					}
 				} catch (QueueEmptyException e) {
-
+					System.out.println("Why would this ever throw a QueueEmptyException?");
 				}
 			}
 		}
