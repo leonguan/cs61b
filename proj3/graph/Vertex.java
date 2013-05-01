@@ -2,7 +2,7 @@ package graph;
 
 import list.*;
 
-public class Vertex {
+class Vertex {
 
 	/**
 	 *  degree references the number of edges attached to this Vertex.
@@ -10,38 +10,38 @@ public class Vertex {
 	 *  item references the Object that this Vertex contains.
 	 *
 	 */
-	protected int degree;
-	protected WUGraph myGraph;
-	protected Object item;
-	protected DList adjacencyList;
-	protected DListNode node;
+	private int degree;
+	private WUGraph myGraph;
+	private Object item;
+	private DList adjacencyList;
+	private DListNode node;
 
 
-	public Vertex(Object item, DListNode node, WUGraph graph) {
+	protected Vertex(Object item, DListNode node, WUGraph graph) {
 		myGraph = graph;
 		this.item = item;
 		this.node = node;
 		adjacencyList = new DList();
 	}
 
-	public int degree() {
+	protected int degree() {
 		return adjacencyList.length();
 	}
 	
-	public Object getItem() {
+	protected Object getItem() {
 		return item;
 	}
 
 
-	public WUGraph getParent() {
+	protected WUGraph getParent() {
 		return myGraph;
 	}
 
-	public DList adjacencyList() {
+	protected DList adjacencyList() {
 		return adjacencyList;
 	}
 
-	public DListNode getNode() {
+	protected DListNode getNode() {
 		return node;
 	}
 
