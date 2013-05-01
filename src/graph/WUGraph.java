@@ -2,11 +2,15 @@
 
 package graph;
 
-import dataStructures.*;
+import list.*;
+import hashTable.*;
 
 /**
  * The WUGraph class represents a weighted, undirected graph.  Self-edges are
  * permitted.
+ * edges keeps count of the number of edges in "this" graph
+ * vertexList keeps a list of DListNodes which contain the vertices of "this" graph
+ * vertexTable and edgeTable are HashTables that contain entries that have vertices and edges as values
  */
 
 public class WUGraph {
@@ -75,32 +79,31 @@ public class WUGraph {
 
 	/**
 	 * addVertex() adds a vertex (with no incident edges) to the graph.  The
-	 * vertex's "name" is the object provided as the parameter "vertex".
+	 * vertex's "name" is the object provided as the parameter "vertex". The internal 
+	 * data structures that represent the graph are changed accordingly. 
 	 * If this object is already a vertex of the graph, the graph is unchanged.
 	 *
 	 * Running time:  O(1).
 	 */
 	public void addVertex(Object vertex) {
-		if (isVertex(vertex)) {
-			// do nothing
-		} else {
+		if (!isVertex(vertex)) {
 			vertexList.insertBack(vertex);
-			Vertex v = new Vertex(vertex, this);
+			Vertex v = new Vertex(vertex, (DListNode) vertexList.back());
 			vertexTable.insert(vertex, v); 
+			vertexTable = vertexTable.resize();
 		}
 	}
 
 	/**
 	 * removeVertex() removes a vertex from the graph.  All edges incident on the
 	 * deleted vertex are removed as well.  If the parameter "vertex" does not
-	 * represent a vertex of the graph, the graph is unchanged.
+	 * represent a vertex of the graph, the graph is unchanged. The internal data
+	 * structures representing the graph are changed accordingly. 
 	 *
 	 * Running time:  O(d), where d is the degree of "vertex".
 	 */
 	public void removeVertex(Object vertex) {
-		if (!isVertex(vertex)) {
-			// do nothing
-		} else {
+		if (isVertex(vertex)) {
 			Vertex v = (Vertex) vertexTable.find(vertex).value();
 			if (v.degree() > 0) {
 				try {
@@ -114,12 +117,9 @@ public class WUGraph {
 
 				}
 			}
-			//remove vertex from vertexTable and vertexList
-			//vertexList.find(vertex).remove();
 			vertexTable.remove(vertex);
 			try {
-				// not in O(d) time...
-				vertexList.find(vertex).remove();
+				v.getNode().remove();
 			}
 			catch (InvalidNodeException e) {
 
@@ -184,9 +184,9 @@ public class WUGraph {
 				DListNode currNode = (DListNode) v.adjacencyList().front();
 
 				for (int i = 0; i < v.degree(); i++) {
-					neighbors.neighborList[i] = ((Vertex) currNode.item()).getItem();
-					Object o = ((Vertex) currNode.item()).getItem();
-					VertexPair vp = new VertexPair(vertex, o);
+					Object obj = ((Vertex) currNode.item()).getItem();					
+					neighbors.neighborList[i] = obj;
+					VertexPair vp = new VertexPair(vertex, obj);
 					neighbors.weightList[i] = ((Edge) edgeTable.find(vp).value()).getWeight();
 					currNode = (DListNode) currNode.next();
 				}
@@ -214,7 +214,6 @@ public class WUGraph {
 				//Update weight of existing edge
 				VertexPair vp = new VertexPair(u, v);
 				((Edge) edgeTable.find(vp).value()).setWeight(weight);
-
 			} else if (u.equals(v)) {
 				//Create a self-edge
 				Vertex uInternal = (Vertex) vertexTable.find(u).value();
@@ -224,8 +223,8 @@ public class WUGraph {
 				VertexPair vp = new VertexPair(u, u);
 				Edge edge = new Edge(uBack, uBack, weight);
 				edgeTable.insert(vp, edge);
+				edgeTable = edgeTable.resize();
 				edges++;
-
 			} else {
 				Vertex uInternal = (Vertex) vertexTable.find(u).value();
 				Vertex vInternal = (Vertex) vertexTable.find(v).value();
@@ -235,14 +234,12 @@ public class WUGraph {
 				vList.insertBack(uInternal);
 				DListNode uBack = (DListNode) uList.back();
 				DListNode vBack = (DListNode) vList.back();
-				uBack.setPartner(vBack);
-				vBack.setPartner(uBack);
 				VertexPair vp = new VertexPair(u, v);
 				Edge edge = new Edge(uBack, vBack, weight);
 				edgeTable.insert(vp, edge);
+				edgeTable = edgeTable.resize();
 				edges++;
 			}
-
 		}
 	}
 
@@ -255,9 +252,7 @@ public class WUGraph {
 	 * Running time:  O(1).
 	 */
 	public void removeEdge(Object u, Object v) {
-		if (!isEdge(u, v)) {
-			//Do nothing
-		} else {
+		if (isEdge(u, v)) {
 			VertexPair vp = new VertexPair(u, v);
 			Edge e = (Edge) edgeTable.find(vp).value();
 			try {
@@ -269,7 +264,6 @@ public class WUGraph {
 			}
 			edgeTable.remove(vp);
 			edges--;
-
 		}
 	}
 

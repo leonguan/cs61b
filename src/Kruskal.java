@@ -1,8 +1,9 @@
 /* Kruskal.java */
 
-import kruskalDataStructures.*;
 import graph.*;
 import set.*;
+import hashTable.*;
+import queue.*;
 
 /**
  * The Kruskal class contains the method minSpanTree(), which implements
@@ -16,16 +17,12 @@ public class Kruskal {
 	 * of the WUGraph g.  The original WUGraph g is NOT changed.
 	 */
 	public static WUGraph minSpanTree(WUGraph g) {
-		// Step 1: Create a new graph T having the same vertices as G, but no edges (yet).
-	    // Upon completion, T will be the minimum spanning tree of G.
+
 		WUGraph t = new WUGraph();
-
 		LinkedQueue q = new LinkedQueue();
-
-		// Get all of the vertices
 		Object[] vertices = g.getVertices();
+		HashTable hashTable = new HashTable();
 		
-		// This is a second for loop which means it would run in O(2*|V|), which is fine
 		for (int i = 0; i < vertices.length; i++) {
 
 			// 1. Add vertices to T
@@ -36,51 +33,48 @@ public class Kruskal {
 			Object[] connected = neighbors.neighborList;
 			int[] weights = neighbors.weightList;
 			
-			// For each vertex, I get all of its neighbors and create an edge for each
-			// Why do we use a LinkedQueue?
-			// When we add the edge to our DS, we should sort while adding?
 			for (int j = 0; j < connected.length; j++) {
 				KruskalEdge edge = new KruskalEdge(vertices[i], connected[j], weights[j]);
-				try {
-					// What is the running time of find? It runs in n time for a linkedqueue of size n
-					if (q.isEmpty() || !q.find(edge)) {
-						q.enqueue(edge);
-					}
-				} catch (QueueEmptyException e) {
-					System.out.println("Why would this ever throw a QueueEmptyException?");
+				VertexPair vp = new VertexPair(vertices[i], connected[j]);
+				if (q.isEmpty() || (hashTable.find(vp) == null)) {
+					q.enqueue(edge);
+					hashTable.insert(vp, edge);
 				}
 			}
 		}
 
 		// 3. Sort edges
-//		System.out.println(q);
-//		for (int i = 1; i <= q.size(); i++) {
-//			System.out.print(((KruskalEdge) q.nth(i)).getWeight() + " ");
-//		}
-//		
-//		System.out.println(q);
+		
+
+
 
 		quickSort(q);	
+
 
 		// 4. Find edges of T
 		
 		DisjointSets dSet = new DisjointSets(vertices.length);
 		
-		HashTable table = new HashTable();
-		for (int i = 1; i <= q.size(); i++) {
-			table.insert(i, q.nth(i));
+		HashTable vertexTable = new HashTable();
+		for (int i = 0; i < vertices.length; i++) {
+			vertexTable.insert(vertices[i], i);
 		}
-		
+
 		for (int i = 1; i <= q.size(); i++) {
 			KruskalEdge edge = (KruskalEdge) q.nth(i);
-			Object v1 = edge.getObj1();
-			Object v2 = edge.getObj2();
-			
-			t.addEdge(edge.getObj1(), edge.getObj2(), edge.getWeight());
-		}
-		
-		return t;
+			Object o1 = edge.getObj1();
+			Object o2 = edge.getObj2();
+			int i1 = (Integer) ((Entry) (vertexTable.find(o1))).value();
+			int i2 = (Integer) ((Entry) (vertexTable.find(o2))).value();
+			int root1 = dSet.find(i1);
+			int root2 = dSet.find(i2);
+			if (i1 != i2 && root1 != root2) {
+				dSet.union(root1, root2);
+				t.addEdge(o1, o2, edge.getWeight());
+			}
 
+		}
+		return t;
 	}
 
 	// Quicksort Algorithm
@@ -101,11 +95,8 @@ public class Kruskal {
 	public static void partition(LinkedQueue qIn, Comparable pivot, 
 			LinkedQueue qSmall, LinkedQueue qEquals, 
 			LinkedQueue qLarge) {
-		// Your solution here.
 		try {
 			while (!qIn.isEmpty()) {
-				
-				// I AM GETTING AN ERROR HERE
 				int k = ((Comparable) ((KruskalEdge) qIn.front()).getWeight()).compareTo(pivot);
 				if (k < 0) {
 					qSmall.enqueue(qIn.dequeue());
