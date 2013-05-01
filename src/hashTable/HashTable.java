@@ -81,33 +81,27 @@ public class HashTable implements Dictionary {
    **/
 
   public HashTable resize() {
-	  if (loadFactor() > 0.75) {
-		  HashTable newTable = new HashTable(buckets + 100);
-		  for (int i = 0; i < buckets; i++) {
-			  try {
-				  if (hashTable[i] != null) {
-					  DListNode currNode = (DListNode) hashTable[i].front();
-					  while (currNode != null) {
-						  Entry entry = (Entry) currNode.item();
-						  newTable.insert(entry.key, entry.value);
-						  currNode = (DListNode) currNode.next();
-					  }
-				  }
-			  }			
-			  catch (InvalidNodeException e) {
+    HashTable newTable = new HashTable(buckets + 100);
+    for (int i = 0; i < buckets; i++) {
+      try {
+        if (hashTable[i] != null) {
+          DListNode currNode = (DListNode) hashTable[i].front();
+          while (currNode != null) {
+            Entry entry = (Entry) currNode.item();
+            newTable.insert(entry.key, entry.value);
+            currNode = (DListNode) currNode.next();
+          }
+        }
+      }			
+      catch (InvalidNodeException e) {
 
-			  }
-		  }
-		  return newTable;
-	  } else {
-		  return this;
-	  }
-	  
-
+      }
+    }
+    return newTable;
   }
 
   /** 
-   *  Returns the load factor of a hash table (size divided by number of 
+   *  @return the load factor of a hash table (size divided by number of 
    *  buckets)
    **/
 
@@ -122,14 +116,18 @@ public class HashTable implements Dictionary {
    *
    *  This function should have package protection (so we can test it), and
    *  should be used by insert, find, and remove.
+   *
+   *  @param code the hashcode being compressed
+   *
+   *  @return int resulting from compression
    **/
 
   int compFunction(int code) {
-	int largePrime = makePrime(buckets * buckets * 37);
-	int converted = (239 * code + 701) % largePrime;
-	if (converted < 0) {
-		converted += largePrime;
-	} 
+    int largePrime = makePrime(buckets * buckets * 37);
+    int converted = (239 * code + 701) % largePrime;
+    if (converted < 0) {
+      converted += largePrime;
+    } 
     return converted % buckets;
   }
 
@@ -168,15 +166,21 @@ public class HashTable implements Dictionary {
    **/
 
   public Entry insert(Object key, Object value) {
-	Entry newEntry = new Entry();
-	newEntry.key = key;
-	newEntry.value = value;
-	int bucket = compFunction(key.hashCode());
-	if (hashTable[bucket] == null) {
-		hashTable[bucket] = new DList();
-	} 
-	hashTable[bucket].insertBack(newEntry);
-	size++;
+    if (loadFactor() > 0.75) {
+      HashTable resized = this.resize();
+      this.hashTable = resized.hashTable;
+      this.buckets = resized.buckets;
+      this.size = resized.size;
+    }
+    Entry newEntry = new Entry();
+    newEntry.key = key;
+    newEntry.value = value;
+    int bucket = compFunction(key.hashCode());
+    if (hashTable[bucket] == null) {
+      hashTable[bucket] = new DList();
+    } 
+    hashTable[bucket].insertBack(newEntry);
+    size++;
     return newEntry;
   }
 
