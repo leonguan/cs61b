@@ -18,10 +18,10 @@ public class Kruskal {
 	public static WUGraph minSpanTree(WUGraph g) {
 
 		WUGraph t = new WUGraph();
-
 		LinkedQueue q = new LinkedQueue();
-
 		Object[] vertices = g.getVertices();
+		HashTable hashTable = new HashTable();
+		
 		for (int i = 0; i < vertices.length; i++) {
 
 			// 1. Add vertices to T
@@ -31,14 +31,13 @@ public class Kruskal {
 			Neighbors neighbors = g.getNeighbors(vertices[i]);
 			Object[] connected = neighbors.neighborList;
 			int[] weights = neighbors.weightList;
+			
 			for (int j = 0; j < connected.length; j++) {
 				KruskalEdge edge = new KruskalEdge(vertices[i], connected[j], weights[j]);
-				try {
-					if (q.isEmpty() || !q.find(edge)) {
-						q.enqueue(edge);
-					}
-				} catch (QueueEmptyException e) {
-
+				VertexPair vp = new VertexPair(vertices[i], connected[j]);
+				if (q.isEmpty() || (hashTable.find(vp) == null)) {
+					q.enqueue(edge);
+					hashTable.insert(vp, edge);
 				}
 			}
 		}
