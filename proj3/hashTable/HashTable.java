@@ -171,7 +171,8 @@ public class HashTable implements Dictionary {
     this.buckets = resized.buckets;
     this.size = resized.size;
   }
-  Entry newEntry = new Entry();
+	
+	Entry newEntry = new Entry();
 	newEntry.key = key;
 	newEntry.value = value;
 	int bucket = compFunction(key.hashCode());
