@@ -6,19 +6,17 @@ class Vertex {
 
 	/**
 	 *  degree references the number of edges attached to this Vertex.
-	 *  myGraph references the Graph that contains this Vertex.
 	 *  item references the Object that this Vertex contains.
+	 *  adjancencyList references a DList that contains the vertices connected to this Vertex
+	 *  node references the DListNode in vertexList
 	 *
 	 */
-	private int degree;
-	private WUGraph myGraph;
 	private Object item;
 	private DList adjacencyList;
 	private DListNode node;
 
 
-	protected Vertex(Object item, DListNode node, WUGraph graph) {
-		myGraph = graph;
+	protected Vertex(Object item, DListNode node) {
 		this.item = item;
 		this.node = node;
 		adjacencyList = new DList();
@@ -30,11 +28,6 @@ class Vertex {
 	
 	protected Object getItem() {
 		return item;
-	}
-
-
-	protected WUGraph getParent() {
-		return myGraph;
 	}
 
 	protected DList adjacencyList() {
