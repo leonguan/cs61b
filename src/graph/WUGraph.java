@@ -90,7 +90,6 @@ public class WUGraph {
 			vertexList.insertBack(vertex);
 			Vertex v = new Vertex(vertex, (DListNode) vertexList.back());
 			vertexTable.insert(vertex, v); 
-			vertexTable = vertexTable.resize();
 		}
 	}
 
@@ -223,7 +222,6 @@ public class WUGraph {
 				VertexPair vp = new VertexPair(u, u);
 				Edge edge = new Edge(uBack, uBack, weight);
 				edgeTable.insert(vp, edge);
-				edgeTable = edgeTable.resize();
 				edges++;
 			} else {
 				Vertex uInternal = (Vertex) vertexTable.find(u).value();
@@ -237,7 +235,6 @@ public class WUGraph {
 				VertexPair vp = new VertexPair(u, v);
 				Edge edge = new Edge(uBack, vBack, weight);
 				edgeTable.insert(vp, edge);
-				edgeTable = edgeTable.resize();
 				edges++;
 			}
 		}
