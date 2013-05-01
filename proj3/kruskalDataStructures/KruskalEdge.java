@@ -52,22 +52,6 @@ public class KruskalEdge {
 		return o2;
 	}
 	
-	
-	/**
-	 * HashCode generates a hash based on the two vertices. 
-	 * Note that it does not require weight because there is at most 
-	 * one edge between any two vertices.
-	 * 
-	 * @return int hashCode
-	 */
-	public int hashCode() {
-		if (o1.equals(o2)) {
-			return o1.hashCode() + 1;
-		} else {
-			return o1.hashCode() + o2.hashCode();
-		}
-	}
-	
 	/**
 	 * equals() returns true if this VertexPair represents the same unordered
 	 * pair of objects as the parameter "o".  The order of the pair does not
