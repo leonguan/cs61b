@@ -74,15 +74,32 @@ public class HashTable implements Dictionary {
 
 
   /** 
-   *  Takes in an old hash table and constructs a new hash table with a size about 50 buckets larger
+   *  Takes in an old hash table and constructs a new hash table with a size about 100 buckets larger
    **/
 
-  public HashTable resize(HashTable table) {
-	HashTable newTable = new HashTable(table.size + 50);
-			
+   public HashTable resize() {
+	  if (loadFactor() > 0.75) {
+		  HashTable newTable = new HashTable(buckets + 100);
+		  for (int i = 0; i < buckets; i++) {
+			  try {
+				  if (hashTable[i] != null) {
+					  DListNode currNode = (DListNode) hashTable[i].front();
+					  while (currNode != null) {
+						  Entry entry = (Entry) currNode.item();
+						  newTable.insert(entry.key, entry.value);
+						  currNode = (DListNode) currNode.next();
+					  }
+				  }
+			  }			
+			  catch (InvalidNodeException e) {
 
-
-	return newTable;
+			  }
+		  }
+		  return newTable;
+	  } else {
+		  return this;
+	  }
+	  
 
   }
 
