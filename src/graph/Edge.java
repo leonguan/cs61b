@@ -2,15 +2,15 @@ package graph;
 
 import list.*;
 
-public class Edge {
+class Edge {
 
-	protected int weight;
-	protected DListNode node1;
-	protected DListNode node2;
+	private int weight;
+	private DListNode node1;
+	private DListNode node2;
 	
 
 	
-	public Edge(DListNode d1, DListNode d2, int weight) {
+	protected Edge(DListNode d1, DListNode d2, int weight) {
 		node1 = d1;
 		node2 = d2;
 		this.weight = weight;
@@ -27,7 +27,7 @@ public class Edge {
 	 *  Performance:  runs in O(1) time.
 	 */
 
-	public void setWeight(int weight) {
+	protected void setWeight(int weight) {
 		this.weight = weight;
 	}
 
@@ -41,15 +41,15 @@ public class Edge {
 	 *
 	 *  Performance:  runs in O(1) time.
 	 */
-	public int getWeight() {
+	protected int getWeight() {
 		return weight;
 	}
 	
-	public DListNode getNode1() {
+	protected DListNode getNode1() {
 		return node1;
 	}
 	
-	public DListNode getNode2() {
+	protected DListNode getNode2() {
 		return node2;
 	}
 	
