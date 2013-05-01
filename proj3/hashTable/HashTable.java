@@ -98,23 +98,19 @@ public class HashTable implements Dictionary {
 		  return newTable;
 	  } else {
 		  return this;
-	  }
-	  
-
+	  }	  
   }
 
+ 
   /** 
-   *  Returns the load factor of a hash table
+   *  Returns the load factor of a hash table (size divided by number of 
+   *  buckets)
    **/
 
-  public float loadFactor(HashTable table) {
-	return table.size / table.buckets;
+  public float loadFactor() {
+	return (float) size / (float) buckets;
 
   }
-
-
-
-
 
 
   /**
