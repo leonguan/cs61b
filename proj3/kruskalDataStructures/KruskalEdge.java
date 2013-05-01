@@ -3,9 +3,9 @@ package kruskalDataStructures;
 public class KruskalEdge {
 
 	
-	protected Object o1;
-	protected Object o2;
-	protected int weight;
+	private Object o1;
+	private Object o2;
+	private int weight;
 	
 
 	
@@ -15,20 +15,6 @@ public class KruskalEdge {
 		this.weight = weight;
 	}
 	
-	
-	/**
-	 *  setWeight() assigns an int to the node's weight value.  If this node is invalid,
-	 *  throws an exception.
-	 *
-	 *  @param integer value of weight.
-	 *  @exception InvalidNodeException if this node is not valid.
-	 *
-	 *  Performance:  runs in O(1) time.
-	 */
-
-	public void setWeight(int weight) {
-		this.weight = weight;
-	}
 
 	/**
 	 *  getWeight() returns the node's weight value.  If this node is invalid,
