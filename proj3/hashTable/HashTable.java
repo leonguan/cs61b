@@ -19,16 +19,19 @@ import list.*;
 public class HashTable implements Dictionary {
 
   /**
-   *  Place any data fields here.
+   *  buckets references the number of "slots" in "this" HashTable
+   *  size references the number of entries in "this" HashTable
+   *  hashTable references an array of DLists can contain all the entries in "this" HashTable
    **/
   int buckets;
   int size;
-  int collisions;
   DList[] hashTable;
   
-  /*
+  /**
    * Helper Functions for testing and finding primes
-   */
+   * isPrime determines if an int x is prime
+   * makePrime finds the smallest prime that is larger than an int x
+   **/
 
   private boolean isPrime(int x) {
 	  for (int i = 2; i < Math.sqrt(x); i++) {
@@ -49,8 +52,7 @@ public class HashTable implements Dictionary {
 
   /** 
    *  Construct a new empty hash table intended to hold roughly sizeEstimate
-   *  entries.  (The precise number of buckets is up to you, but we recommend
-   *  you use a prime number, and shoot for a load factor between 0.5 and 1.)
+   *  entries.  
    **/
 
   public HashTable(int sizeEstimate) {
@@ -61,8 +63,7 @@ public class HashTable implements Dictionary {
   }
 
   /** 
-   *  Construct a new empty hash table with a default size.  Say, a prime in
-   *  the neighborhood of 100.
+   *  Construct a new empty hash table with a default size. 
    **/
 
   public HashTable() {
@@ -74,10 +75,12 @@ public class HashTable implements Dictionary {
 
 
   /** 
-   *  Takes in an old hash table and constructs a new hash table with a size about 100 buckets larger
+   *  Takes in "this" HashTable and constructs a new HashTable 
+   *  with at least 100 more buckets. All entries in "this" 
+   *  HashTable are transferred over to the new HashTable.
    **/
 
-   public HashTable resize() {
+  public HashTable resize() {
 	  if (loadFactor() > 0.75) {
 		  HashTable newTable = new HashTable(buckets + 100);
 		  for (int i = 0; i < buckets; i++) {
@@ -98,10 +101,11 @@ public class HashTable implements Dictionary {
 		  return newTable;
 	  } else {
 		  return this;
-	  }	  
+	  }
+	  
+
   }
 
- 
   /** 
    *  Returns the load factor of a hash table (size divided by number of 
    *  buckets)
@@ -111,7 +115,6 @@ public class HashTable implements Dictionary {
 	return (float) size / (float) buckets;
 
   }
-
 
   /**
    *  Converts a hash code in the range Integer.MIN_VALUE...Integer.MAX_VALUE
@@ -171,9 +174,7 @@ public class HashTable implements Dictionary {
 	int bucket = compFunction(key.hashCode());
 	if (hashTable[bucket] == null) {
 		hashTable[bucket] = new DList();
-	} else {
-		collisions++;
-	}
+	} 
 	hashTable[bucket].insertBack(newEntry);
 	size++;
     return newEntry;
@@ -201,8 +202,7 @@ public class HashTable implements Dictionary {
 		  }
 		  while (elem.isValidNode()) {
 			  try {
-				  if (((Entry) elem.item()).key().equals(key)) {
-					  
+				  if (((Entry) elem.item()).key().equals(key)) {  
 					  return (Entry) elem.item();
 				  }
 				  elem = elem.next();
@@ -210,12 +210,9 @@ public class HashTable implements Dictionary {
 			  } catch (InvalidNodeException e) {
 				  return null;
 			  }
-
 		  }
 	  }
 	  return null;
-
-
   }
 
   /** 
@@ -261,6 +258,22 @@ public class HashTable implements Dictionary {
   public void makeEmpty() {
 	hashTable = new DList[buckets];
 	size = 0;
+  }
+  
+  public static void main(String[] args) {
+	  
+	  HashTable table = new HashTable();
+	  System.out.println(table.buckets);
+	  for (int i = 0; i < 80; i++) {
+		  table.insert(i, i);
+	  }
+	  System.out.println(table.loadFactor());
+	  HashTable newTable = table.resize();
+	  System.out.println(newTable.buckets);
+	  System.out.println(newTable.size);
+	  System.out.println(newTable.find(60).value);
+
+	  
   }
   
 }
