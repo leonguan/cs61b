@@ -274,10 +274,9 @@ public class HashTable implements Dictionary {
       //}
 	  }
 	  System.out.println(table.loadFactor());
-	  HashTable newTable = table.resize();
-	  System.out.println(newTable.buckets);
-	  System.out.println("size: " + newTable.size);
-	  System.out.println(newTable.find(60).value);
+	  System.out.println(table.buckets);
+	  System.out.println("size: " + table.size);
+	  System.out.println(table.find(60).value);
 
 	  
   }
