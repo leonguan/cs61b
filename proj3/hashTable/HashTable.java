@@ -80,28 +80,23 @@ public class HashTable implements Dictionary {
    *  HashTable are transferred over to the new HashTable.
    **/
 
-  public HashTable resize() {
-	  if (loadFactor() > 0.75) {
-		  HashTable newTable = new HashTable(buckets + 100);
-		  for (int i = 0; i < buckets; i++) {
-			  try {
-				  if (hashTable[i] != null) {
-					  DListNode currNode = (DListNode) hashTable[i].front();
-					  while (currNode != null) {
-						  Entry entry = (Entry) currNode.item();
-						  newTable.insert(entry.key, entry.value);
-						  currNode = (DListNode) currNode.next();
-					  }
-				  }
-			  }			
-			  catch (InvalidNodeException e) {
-
-			  }
-		  }
-		  return newTable;
-	  } else {
-		  return this;
+  private HashTable resize() {
+	  HashTable newTable = new HashTable(buckets + 100);
+		for (int i = 0; i < buckets; i++) {
+      try {
+        if (hashTable[i] != null) {
+          DListNode currNode = (DListNode) hashTable[i].front();
+          while (currNode != null) {
+            Entry entry = (Entry) currNode.item();
+            newTable.insert(entry.key, entry.value);
+            currNode = (DListNode) currNode.next();
+          }
+        }
+      }			
+      catch (InvalidNodeException e) {
+      }
 	  }
+    return newTable;
 	  
 
   }
@@ -168,7 +163,15 @@ public class HashTable implements Dictionary {
    **/
 
   public Entry insert(Object key, Object value) {
-	Entry newEntry = new Entry();
+	if (loadFactor() > 0.75) {
+    System.out.println("resizing");
+    HashTable resized = this.resize();
+    System.out.println("load factor after resizing: " + resized.loadFactor());
+    this.hashTable = resized.hashTable;
+    this.buckets = resized.buckets;
+    this.size = resized.size;
+  }
+  Entry newEntry = new Entry();
 	newEntry.key = key;
 	newEntry.value = value;
 	int bucket = compFunction(key.hashCode());
@@ -266,11 +269,14 @@ public class HashTable implements Dictionary {
 	  System.out.println(table.buckets);
 	  for (int i = 0; i < 80; i++) {
 		  table.insert(i, i);
+      //if (i%10 == 0) {
+        //System.out.println("load factor: " + table.loadFactor());
+      //}
 	  }
 	  System.out.println(table.loadFactor());
 	  HashTable newTable = table.resize();
 	  System.out.println(newTable.buckets);
-	  System.out.println(newTable.size);
+	  System.out.println("size: " + newTable.size);
 	  System.out.println(newTable.find(60).value);
 
 	  
