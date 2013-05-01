@@ -7,9 +7,7 @@ class Edge {
 	private int weight;
 	private DListNode node1;
 	private DListNode node2;
-	
 
-	
 	protected Edge(DListNode d1, DListNode d2, int weight) {
 		node1 = d1;
 		node2 = d2;

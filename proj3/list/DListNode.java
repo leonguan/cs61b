@@ -19,7 +19,6 @@ public class DListNode extends ListNode {
 	
 	protected DListNode prev;
 	protected DListNode next;
-	protected DListNode partner;
 
 	/**
 	 *  DListNode() constructor.
@@ -82,17 +81,6 @@ public class DListNode extends ListNode {
 		}
 		return prev;
 	}
-
-
-	
-	public void setPartner(DListNode partner) {
-		this.partner = partner;
-	}
-	
-	public DListNode getPartner() {
-		return partner;
-	}
-
 
 	/**
 	 *  insertAfter() inserts an item immediately following this node.  If this
