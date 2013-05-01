@@ -44,17 +44,12 @@ public class Kruskal {
 		}
 
 		// 3. Sort edges
-		
-
-
 
 		quickSort(q);	
-
 
 		// 4. Find edges of T
 		
 		DisjointSets dSet = new DisjointSets(vertices.length);
-		
 		HashTable vertexTable = new HashTable();
 		for (int i = 0; i < vertices.length; i++) {
 			vertexTable.insert(vertices[i], i);
@@ -72,7 +67,6 @@ public class Kruskal {
 				dSet.union(root1, root2);
 				t.addEdge(o1, o2, edge.getWeight());
 			}
-
 		}
 		return t;
 	}
