@@ -59,6 +59,8 @@ public class WUGraph {
 	 * (NOTE:  Do not return any internal data structure you use to represent
 	 * vertices!  Return only the same objects that were provided by the
 	 * calling application in calls to addVertex().)
+	 * 
+	 * @return an array of the objects that serve as vertices of the graph
 	 *
 	 * Running time:  O(|V|).
 	 */
@@ -83,6 +85,8 @@ public class WUGraph {
 	 * data structures that represent the graph are changed accordingly. 
 	 * If this object is already a vertex of the graph, the graph is unchanged.
 	 *
+	 * @param vertex is the object the user wants to add to the graph
+	 * 
 	 * Running time:  O(1).
 	 */
 	public void addVertex(Object vertex) {
@@ -98,6 +102,8 @@ public class WUGraph {
 	 * deleted vertex are removed as well.  If the parameter "vertex" does not
 	 * represent a vertex of the graph, the graph is unchanged. The internal data
 	 * structures representing the graph are changed accordingly. 
+	 * 
+	 * @param vertex is the object that the user wants to remove from the graph
 	 *
 	 * Running time:  O(d), where d is the degree of "vertex".
 	 */
@@ -129,6 +135,9 @@ public class WUGraph {
 	/**
 	 * isVertex() returns true if the parameter "vertex" represents a vertex of
 	 * the graph.
+	 * 
+	 * @param vertex is the object the user wants to check
+	 * @return true if vertex is in the graph
 	 *
 	 * Running time:  O(1).
 	 */
@@ -140,6 +149,9 @@ public class WUGraph {
 	 * degree() returns the degree of a vertex.  Self-edges add only one to the
 	 * degree of a vertex.  If the parameter "vertex" doesn't represent a vertex
 	 * of the graph, zero is returned.
+	 * 
+	 * @param vertex is the object the user wants to check
+	 * @return the number of vertices connected to vertex
 	 *
 	 * Running time:  O(1).
 	 */
@@ -166,6 +178,9 @@ public class WUGraph {
 	 * (NOTE:  In the neighborList array, do not return any internal data
 	 * structure you use to represent vertices!  Return only the same objects
 	 * that were provided by the calling application in calls to addVertex().)
+	 * 
+	 * @param vertex is the object the user wants to inquire about
+	 * @return a Neighbor object that contains two arrays
 	 *
 	 * Running time:  O(d), where d is the degree of "vertex".
 	 * @throws InvalidNodeException 
@@ -204,6 +219,10 @@ public class WUGraph {
 	 * The edge is assigned a weight of "weight".  If the edge is already
 	 * contained in the graph, the weight is updated to reflect the new value.
 	 * Self-edges (where u == v) are allowed.
+	 * 
+	 * @param u is the object to start an edge with
+	 * @param v is the object to end an edge with
+	 * @param weight is the weight of the edge
 	 *
 	 * Running time:  O(1).
 	 */
@@ -245,6 +264,9 @@ public class WUGraph {
 	 * parameters u and v does not represent a vertex of the graph, the graph
 	 * is unchanged.  If (u, v) is not an edge of the graph, the graph is
 	 * unchanged.
+	 * 
+	 * @param u is the start of the edge
+	 * @param v is the end of the edge
 	 *
 	 * Running time:  O(1).
 	 */
@@ -268,7 +290,11 @@ public class WUGraph {
 	 * isEdge() returns true if (u, v) is an edge of the graph.  Returns false
 	 * if (u, v) is not an edge (including the case where either of the
 	 * parameters u and v does not represent a vertex of the graph).
-	 *
+	 * 
+	 * @param u is the start of the edge
+	 * @param v is the end of the edge
+	 * @return true if an edge exists between u and v
+	 * 
 	 * Running time:  O(1).
 	 */
 	public boolean isEdge(Object u, Object v) {
@@ -292,6 +318,10 @@ public class WUGraph {
 	 * However, some sort of default response is necessary for missing edges,
 	 * so we return zero.  An exception would be more appropriate, but
 	 * also more annoying.)
+	 * 
+	 * @param u is the start of the edge
+	 * @param v is the end of the edge
+	 * @return the weight of the edge defined by u and v
 	 *
 	 * Running time:  O(1).
 	 */
