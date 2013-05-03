@@ -28,8 +28,10 @@ public class Kruskal {
 		
 		for (int i = 0; i < vertices.length; i++) {
 
+			// 1. Add vertices to T
 			t.addVertex(vertices[i]);
 
+			// 2. Make a list of edges in G
 			Neighbors neighbors = g.getNeighbors(vertices[i]);
 			Object[] connected = neighbors.neighborList;
 			int[] weights = neighbors.weightList;
@@ -42,10 +44,14 @@ public class Kruskal {
 				}
 			}
 		}
+
+		// 3. Sort edges
+
+		quickSort(q);	
+
+		// 4. Find edges of T
 		
-    quickSort(q);	
-		
-    DisjointSets dSet = new DisjointSets(vertices.length);
+		DisjointSets dSet = new DisjointSets(vertices.length);
 		HashTable vertexTable = new HashTable();
 		for (int i = 0; i < vertices.length; i++) {
 			vertexTable.insert(vertices[i], i);
@@ -81,7 +87,7 @@ public class Kruskal {
 	 *  @param qLarge is a LinkedQueue, in which all items greater than pivot
 	 *    will be enqueued.  
 	 **/   
-	private static void partition(LinkedQueue qIn, Comparable pivot, 
+	public static void partition(LinkedQueue qIn, Comparable pivot, 
 			LinkedQueue qSmall, LinkedQueue qEquals, 
 			LinkedQueue qLarge) {
 		try {
@@ -106,7 +112,7 @@ public class Kruskal {
 	 *  quickSort() sorts q from smallest to largest using quicksort.
 	 *  @param q is a LinkedQueue of Comparable objects.
 	 **/
-	private static void quickSort(LinkedQueue q) {
+	public static void quickSort(LinkedQueue q) {
 		// Your solution here.
 	    if (!q.isEmpty()) {
         int i = (int) (q.size() * Math.random());
