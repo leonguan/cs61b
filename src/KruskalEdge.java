@@ -68,4 +68,19 @@ public class KruskalEdge {
 		}
 	}
 	
+  /**
+	 * hashCode() returns a hashCode equal to the sum of the hashCodes of each
+	 * of the two objects of the pair, so that the order of the objects will
+	 * not affect the hashCode.  Self-edges are treated differently:  we don't
+	 * add an object's hashCode to itself, since the result would always be even.
+	 * We add one to the hashCode so that a self-edge will not collide with the
+	 * object itself if vertices and edges are stored in the same hash table.
+	 */
+	public int hashCode() {
+		if (o1.equals(o2)) {
+			return o1.hashCode() + 1;
+		} else {
+			return o1.hashCode() + o2.hashCode();
+		}
+	}	
 }

@@ -80,7 +80,7 @@ public class HashTable implements Dictionary {
    *  HashTable are transferred over to the new HashTable.
    **/
 
-  public HashTable resize() {
+  protected HashTable resize() {
     HashTable newTable = new HashTable(buckets + 100);
     for (int i = 0; i < buckets; i++) {
       try {
@@ -105,7 +105,8 @@ public class HashTable implements Dictionary {
    *  buckets)
    **/
 
-  public float loadFactor() {
+
+  protected float loadFactor() {
 	return (float) size / (float) buckets;
 
   }

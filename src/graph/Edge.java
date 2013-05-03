@@ -9,7 +9,15 @@ class Edge {
 	private DListNode node2;
 	
 
-	
+	/**
+   * Constructs an edge containing references to where objects are stored.
+   *
+   * @param d1 is the DListNode from the adjacency list of object1 that 
+   * refers to object2
+   * @param d2 is the DListNode from the adjacency list of object2 that 
+   * refers to object1
+   * @param weight is the weight of the edge being stored
+   */
 	protected Edge(DListNode d1, DListNode d2, int weight) {
 		node1 = d1;
 		node2 = d2;
@@ -45,10 +53,21 @@ class Edge {
 		return weight;
 	}
 	
+  /**
+   * getNode1() returns node1. 
+   *
+   * @return a DListNode stored in node1
+   *
+   */
 	protected DListNode getNode1() {
 		return node1;
 	}
 	
+  /**
+   * getNode2() returns node2
+   *
+   * @return a DListNode stored in node2
+   */
 	protected DListNode getNode2() {
 		return node2;
 	}
