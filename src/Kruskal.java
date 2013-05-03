@@ -117,11 +117,11 @@ public class Kruskal {
 	public static void quickSort(LinkedQueue q) {
 		// Your solution here.
 	    if (!q.isEmpty()) {
-                int pivot = ((int) (q.size()*Math.random())) + 1;
+                Comparable pivot = (Comparable) ((KruskalEdge) q.nth(i)).getWeight()
                 LinkedQueue qSmall = new LinkedQueue();
                 LinkedQueue qLarge = new LinkedQueue();
                 LinkedQueue qEquals = new LinkedQueue();
-                partition(q, (Comparable) q.nth(pivot) , qSmall, qEquals, qLarge);
+                partition(q, pivot, qSmall, qEquals, qLarge);
                 quickSort(qSmall);
                 quickSort(qLarge);
                 q.append(qSmall);
