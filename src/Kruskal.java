@@ -87,7 +87,7 @@ public class Kruskal {
 	 *  @param qLarge is a LinkedQueue, in which all items greater than pivot
 	 *    will be enqueued.  
 	 **/   
-	public static void partition(LinkedQueue qIn, Comparable pivot, 
+	private static void partition(LinkedQueue qIn, Comparable pivot, 
 			LinkedQueue qSmall, LinkedQueue qEquals, 
 			LinkedQueue qLarge) {
 		try {
@@ -112,22 +112,22 @@ public class Kruskal {
 	 *  quickSort() sorts q from smallest to largest using quicksort.
 	 *  @param q is a LinkedQueue of Comparable objects.
 	 **/
-	public static void quickSort(LinkedQueue q) {
+	private static void quickSort(LinkedQueue q) {
 		// Your solution here.
 	    if (!q.isEmpty()) {
-        int i = (int) (q.size() * Math.random());
-        Comparable pivot = (Comparable) ((KruskalEdge) q.nth(i)).getWeight();
-        LinkedQueue qSmall = new LinkedQueue();
-        LinkedQueue qLarge = new LinkedQueue();
-        LinkedQueue qEquals = new LinkedQueue();
-        partition(q, pivot, qSmall, qEquals, qLarge);
-        quickSort(qSmall);
-        quickSort(qLarge);
-        q.append(qSmall);
-        q.append(qEquals);
-        q.append(qLarge);
-    }
-}
+	    	int i = (int) (q.size() * Math.random());
+	    	Comparable pivot = (Comparable) ((KruskalEdge) q.nth(i)).getWeight();
+	    	LinkedQueue qSmall = new LinkedQueue();
+	    	LinkedQueue qLarge = new LinkedQueue();
+	    	LinkedQueue qEquals = new LinkedQueue();
+	    	partition(q, pivot, qSmall, qEquals, qLarge);
+	    	quickSort(qSmall);
+	    	quickSort(qLarge);
+	    	q.append(qSmall);
+	    	q.append(qEquals);
+	    	q.append(qLarge);
+	    }
+	}
 
 
 
