@@ -1,0 +1,75 @@
+GRADER file for Project 3
+
+Name: Gabriel Tan
+Login: 
+
+Partner 1: Jihui Jin
+Login: cs61b-sg 
+
+Partner 2: Andrew Liu
+Login:
+
+Data Structures:
+1. List Package
+    * DList extends List
+        * public DList - constructs a new DList
+        * public void insertFront - inserts an item at the front
+        * public void insertBack - inserts an item at the back
+        * public DListNode find - finds an item if in DList
+        * public ListNode front - returns the front of the list
+        * public ListNode back - returns the back of the list
+    * DListNode extends ListNode
+        * public boolean isValidNode - returns whether the node is valid or not
+        * public ListNode next - returns next Node
+        * public ListNode prev - returns prev Node
+        * public void insertAfter - inserts an item after node
+        * public void insertBefore - inserts an item before node
+        * public void remove - removes node from list
+
+
+2. Queue Package
+    * LinkedQueue implements Queue
+        * public LinkedQueue - constructs a new LinkedQueue
+        * public int size - returns the size
+        * public boolean isEmpty - returns whether this is empty 
+        * public void enqueue - adds an item to the queue
+        * public Object dequeue - removes item at front of queue
+        * public Object front - returns item at front
+        * public boolean find - returns true if item in queue
+        * public Object nth - returns object at nth position
+        * public void append - appends LinkedQueue to this
+
+3. HashTable Package
+    * HashTable implements Dictionary
+        * public HashTable - constructs a new empty HashTable
+        * public int size - returns number of items in HashTable
+        * public boolean isEmpty - returns true if this is empty
+        * public Entry insert - inserts an item into HashTable
+        * public Entry find - finds item in HashTable
+        * public Entry remove - removes item from HashTable
+        * public void makeEmpty - removes all items from HashTable
+    * Entry
+        * public Object key - returns key
+        * public Object value - returns value
+        * public void setValue - changes value stored
+4. Set Package
+    * DisjointSets
+        * public DisjointSets - constructs a new set of DisjointSets  
+        * public void union - joins two disjoint sets
+        * public int find - finds the name of the set containing an item
+
+WUGraph
+  1. removeVertex() - An Edge object stores three things: two DListNodes 
+  and the weight of the edge. Every Vertex has an AdjacencyList that stores 
+  all adjacent Vertices. The first DListNode stores a reference to the node 
+  storing vertex2 in vertex1's AdjacencyList. The second DListNode stores a 
+  reference to the node storing vertex1 in vertex2's AdjacencyList. Using
+  these references, an Edge can delete itself in O(1) time.
+
+  removeVertex walks through the vertex's Adjacency List and removes each edge 
+  containing the vertex and each adjacent vertex. Since each deletion runs in 
+  O(1) time, removeVertex() runs in O(d) time.
+
+  2. getVertices() - WUGraph stores a list of Vertices as an attribute. When
+  getVertices is called, the graph simply walks through vertexList and returns 
+  the objects that were added to WUGraph.
