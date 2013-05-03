@@ -120,6 +120,8 @@ For the data structure to hold all of our edges, we used a LinkedQueue. We chose
 The most important reason we reused this is because  we had already implemented a quicksort method for it, which we would need for Kruskal's algorithm (part 2).
 The fact that the data structure is a queue actually was not utilized in this project. We simply wanted to use a list-type data structure
 that would allow us to add objects and then sort later.
+Obtaining all of the edges ran in |V| time since there are V vertices and V >> d where d is the number of neighbors for a vertex.
+The sort we used was quicksort, which we implemented for homework and ran in |E| * log |E| time.
 We implemented two Hashtables in order to meet the time requirements.
 The first hashtable was used in coordination with the LinkedQueue to make the LinkedQueue a set effectively. Whenever we added a KruskalEdge, we added it to both the LinkedQueue as well as the hashtable.
 In order to make sure the LinkedQueue held only distinct KruskalEdges, we had to check in the hashtable first to see if the KruskalEdge was already in the LinkedQueue.
