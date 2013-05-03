@@ -116,41 +116,18 @@ public class Kruskal {
 	 **/
 	public static void quickSort(LinkedQueue q) {
 		// Your solution here.
-		int i = (int) (q.size() * Math.random());
-		if (q.isEmpty() || q.size() == 1) {
-			// do nothing
-		} else {
-			try {
-				Comparable pivot = (Comparable) ((KruskalEdge) q.nth(i)).getWeight();
-				LinkedQueue qSmall = new LinkedQueue();
-				LinkedQueue qEquals = new LinkedQueue();
-				LinkedQueue qLarge = new LinkedQueue();
-				partition(q, pivot, qSmall, qEquals, qLarge);
-				if (qSmall.size() == 1 && qEquals.size() == 1 && qLarge.size() == 1) {
-					q.append(qSmall);
-					q.append(qEquals);
-					q.append(qLarge);
-				} else if (qSmall.size() == 0 && qEquals.size() == 1 && qLarge.size() == 1) {
-					q.append(qEquals);
-					q.append(qLarge);
-				} else if (qSmall.size() == 1 && qEquals.size() == 0 && qLarge.size() == 1) {
-					q.append(qSmall);
-					q.append(qLarge);
-				} else if (qSmall.size() == 1 && qEquals.size() == 1 && qLarge.size() == 0) {
-					q.append(qSmall);
-					q.append(qEquals);
-				} else {
-					quickSort(qSmall);
-					quickSort(qLarge);
-				}
-				q.append(qSmall);
-				q.append(qEquals);
-				q.append(qLarge);
-			}
-			catch (Exception e) {
-
-			}
-		}
+	    if (!q.isEmpty()) {
+                int pivot = ((int) (q.size()*Math.random())) + 1;
+                LinkedQueue qSmall = new LinkedQueue();
+                LinkedQueue qLarge = new LinkedQueue();
+                LinkedQueue qEquals = new LinkedQueue();
+                partition(q, (Comparable) q.nth(pivot) , qSmall, qEquals, qLarge);
+                quickSort(qSmall);
+                quickSort(qLarge);
+                q.append(qSmall);
+                q.append(qEquals);
+                q.append(qLarge);
+            }
 	}
 
 
