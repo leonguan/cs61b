@@ -114,4 +114,15 @@ WUGraph
   the objects that were added to WUGraph.
 
 Design Decisions for Kruskal (Part II):
-Krus
+For Kruskal's algorithm, we basically followed the instructions that were given in the readme.
+We created our own KruskalEdge that was analogous to the Edge DS that we used in part 1. Each KruskalEdge had two vertices and a weight.
+For the data structure to hold all of our edges, we used a LinkedQueue. We chose the LinkedQueue for simplicity's sake because we had already written and tested it in previous homeworks.
+The most important reason we reused this is because  we had already implemented a quicksort method for it, which we would need for Kruskal's algorithm (part 2).
+The fact that the data structure is a queue actually was not utilized in this project. We simply wanted to use a list-type data structure
+that would allow us to add objects and then sort later.
+We implemented two Hashtables in order to meet the time requirements.
+The first hashtable was used in coordination with the LinkedQueue to make the LinkedQueue a set effectively. Whenever we added a KruskalEdge, we added it to both the LinkedQueue as well as the hashtable.
+In order to make sure the LinkedQueue held only distinct KruskalEdges, we had to check in the hashtable first to see if the KruskalEdge was already in the LinkedQueue.
+This allowed us to perform lookup in O(1) time rather than O(n) time if we had called find on the LinkedQueue.
+The second hashtable we used was to map edges to integers. By iterating through our sorted LinkedQueue, we hashed each of them and assigned them a corresponding integer from 1 to n where n is the number of edges.
+This allowed us to use the DisjointSet data structure that we were provided.
