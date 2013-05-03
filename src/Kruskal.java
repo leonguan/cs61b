@@ -24,7 +24,7 @@ public class Kruskal {
 		WUGraph t = new WUGraph();
 		LinkedQueue q = new LinkedQueue();
 		Object[] vertices = g.getVertices();
-		HashTable hashTable = new HashTable();
+		HashTable hashTable = new HashTable(vertices.length);
 		
 		for (int i = 0; i < vertices.length; i++) {
 
@@ -52,7 +52,7 @@ public class Kruskal {
 		// 4. Find edges of T
 		
 		DisjointSets dSet = new DisjointSets(vertices.length);
-		HashTable vertexTable = new HashTable();
+		HashTable vertexTable = new HashTable(vertices.length);
 		for (int i = 0; i < vertices.length; i++) {
 			vertexTable.insert(vertices[i], i);
 		}
@@ -113,7 +113,6 @@ public class Kruskal {
 	 *  @param q is a LinkedQueue of Comparable objects.
 	 **/
 	private static void quickSort(LinkedQueue q) {
-		// Your solution here.
 	    if (!q.isEmpty()) {
 	    	int i = (int) (q.size() * Math.random());
 	    	Comparable pivot = (Comparable) ((KruskalEdge) q.nth(i)).getWeight();
