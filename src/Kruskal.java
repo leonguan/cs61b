@@ -15,6 +15,9 @@ public class Kruskal {
 	/**
 	 * minSpanTree() returns a WUGraph that represents the minimum spanning tree
 	 * of the WUGraph g.  The original WUGraph g is NOT changed.
+	 * 
+	 * @param g is the WUGraph that you want to perform Kruskal's Algorithm on
+	 * @return a WUGraph that is the minimum spanning tree of g
 	 */
 	public static WUGraph minSpanTree(WUGraph g) {
 
