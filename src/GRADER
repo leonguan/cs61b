@@ -7,19 +7,30 @@ Partner 1: Jihui Jin
 Login: cs61b-sg 
 
 Partner 2: Andrew Liu
-Login:
+Login: cs61b-py
 
 Data Structures:
 1. List Package
+	* List - abstract class
+		A list data structure that holds a size, is able to add to the front and back,
+		check the items in the front and back, and check whether the list is empty.
     * DList extends List
-        * public DList - constructs a new DList
-        * public void insertFront - inserts an item at the front
-        * public void insertBack - inserts an item at the back
-        * public DListNode find - finds an item if in DList
-        * public ListNode front - returns the front of the list
-        * public ListNode back - returns the back of the list
+    	The doubly-linked list data structure simply references a DListNode as its head.
+    	We use a DList in WUGraph to store the list of vertices in the Graph.
+    	The reason for this is because:
+    		- it can insert in O(1) time (the list is unordered)
+    		- iterate through in O(V) time (in order to obtain all vertices)
+    	
+        * public void insertFront(Object item) - inserts item at the front of the DList
+        * public void insertBack(Object item) - inserts item at the back of the DList
+        * public DListNode find(Object item) - return a DListNode that has the same item as the parameter if it exists. Otherwise, returns null
+        * public ListNode front() - returns the DListNode at the front of the list
+        * public ListNode back() - returns the DListNode at the back of the list
     * DListNode extends ListNode
-        * public boolean isValidNode - returns whether the node is valid or not
+    	A node representing a specific item in a doubly-linked list
+    	We used this data structure for simplicity's sake since we had already written it in a past homework.
+    	
+        * public boolean isValidNode() - isValidNode returns true if this node is valid; false otherwise.
         * public ListNode next - returns next Node
         * public ListNode prev - returns prev Node
         * public void insertAfter - inserts an item after node
@@ -58,6 +69,7 @@ Data Structures:
         * public void union - joins two disjoint sets
         * public int find - finds the name of the set containing an item
 
+Design Decisions for WUGraph:
 WUGraph
   1. removeVertex() - An Edge object stores three things: two DListNodes 
   and the weight of the edge. Every Vertex has an AdjacencyList that stores 

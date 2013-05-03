@@ -100,7 +100,7 @@ public class DList extends List {
    *
    *  @param item is the item to search for.
    *  
-   *  @return a DListNode that has the same item as the parameter
+   *  @return a DListNode that has the same item as the parameter if it exists. Otherwise, returns null
    *
    *  Performance:  runs in O(n) time.
    **/
