@@ -14,6 +14,7 @@ Data Structures:
 	* List - abstract class
 		A list data structure that holds a size, is able to add to the front and back,
 		check the items in the front and back, and check whether the list is empty.
+	
     * DList extends List
     	The doubly-linked list data structure simply references a DListNode as its head.
     	We use a DList in WUGraph to store the list of vertices in the Graph.
@@ -26,50 +27,76 @@ Data Structures:
         * public DListNode find(Object item) - return a DListNode that has the same item as the parameter if it exists. Otherwise, returns null
         * public ListNode front() - returns the DListNode at the front of the list
         * public ListNode back() - returns the DListNode at the back of the list
+        
     * DListNode extends ListNode
     	A node representing a specific item in a doubly-linked list
     	We used this data structure for simplicity's sake since we had already written it in a past homework.
     	
         * public boolean isValidNode() - isValidNode returns true if this node is valid; false otherwise.
-        * public ListNode next - returns next Node
-        * public ListNode prev - returns prev Node
-        * public void insertAfter - inserts an item after node
-        * public void insertBefore - inserts an item before node
-        * public void remove - removes node from list
+        * public ListNode next() - next() returns the node following this node.  If this node is invalid, throws an exception.
+        * public ListNode prev() - prev() returns the node before this node.  If this node is invalid, throws an exception.
+        * public void insertAfter(Object item) - insertAfter() inserts an item immediately following this node.  If this node is invalid, throws an exception.
+        * public void insertBefore(Object item) - insertBefore() inserts an item immediately preceding this node.  If this node is invalid, throws an exception.
+        * public void remove() - remove() removes this node from its DList.  If this node is invalid, throws an exception.
 
 
 2. Queue Package
     * LinkedQueue implements Queue
-        * public LinkedQueue - constructs a new LinkedQueue
-        * public int size - returns the size
-        * public boolean isEmpty - returns whether this is empty 
-        * public void enqueue - adds an item to the queue
-        * public Object dequeue - removes item at front of queue
-        * public Object front - returns item at front
-        * public boolean find - returns true if item in queue
-        * public Object nth - returns object at nth position
-        * public void append - appends LinkedQueue to this
+    	A queue data structure. We used this specific LinkedQueue for simplicity's sake because we had already written and tested it in previous homeworks.
+    	The most important reason we reused this is because  we had already implemented a quicksort method for it, which we would need for Kruskal's algorithm (part 2).
+    	The fact that the data structure is a queue actually was not utilized in this project. We simply wanted to use a list-type data structure
+    	that would allow us to add objects and then sort later.
+    	
+        * public int size() - returns the size of the LinkedQueue
+        * public boolean isEmpty() - returns whether this is empty 
+        * public void enqueue(Object item) - adds an item to the queue
+        * public Object dequeue() - removes item at front of queue
+        * public Object front() - returns item at front
+        * public boolean find(Object item) - returns true if item in queue
+        * public Object nth(int n) - returns object at nth position
+        * public void append(LinkedQueue q) - appends the contents of q to the end of this in O(1) time
 
 3. HashTable Package
     * HashTable implements Dictionary
-        * public HashTable - constructs a new empty HashTable
-        * public int size - returns number of items in HashTable
-        * public boolean isEmpty - returns true if this is empty
-        * public Entry insert - inserts an item into HashTable
-        * public Entry find - finds item in HashTable
-        * public Entry remove - removes item from HashTable
-        * public void makeEmpty - removes all items from HashTable
+    	We used the HashTable data structure that we created earlier in the semester to allow us to do look up in O(1) time.
+    	We used the hashtable in several places where regular lookup in adjacency lists or linkedqueues would run on O(n)
+    	By storing out objects in both the lists as well as the hashtable, we can check in the hashtable to determine whether or not
+    	the objects were in the corresponding list.
+    	We wrote hashcodes for the classes whose objects we were planning to hash.
+    	
+        * public int size() - returns number of items in HashTable
+        * public boolean isEmpty() - returns true if this is empty
+        * public Entry insert(Object item) - inserts an item into HashTable
+        * public Entry find(Object item) - finds item in HashTable
+        * public Entry remove(Object item) - removes item from HashTable
+        * public void makeEmpty() - removes all items from HashTable
     * Entry
+    	A container data structure that simply represents entries in the hash table. This was created along with the HashTable earlier in the semester.
         * public Object key - returns key
         * public Object value - returns value
         * public void setValue - changes value stored
+        
 4. Set Package
     * DisjointSets
-        * public DisjointSets - constructs a new set of DisjointSets  
-        * public void union - joins two disjoint sets
-        * public int find - finds the name of the set containing an item
+    	The DisjointSets data structure was given to us and we did not make any modifications to it.
+    	It was used in part 2 (Kruskal's Algorithm) when we wanted to determine whether or not two vertices were already connected.
+    	In the DisjointSets data structure, each object is initially stored in distinct sets, each represented by a unique integer from 1 to n, where n are the number
+    	of objects stored in the set (and the number of distinct sets at the beginning).
+    	Note that each object in the set is mapped to a unique integer.
+    	Calling find on the integer corresponding to an object returns the root of the set the object is in.
+    	Two objects with the same root are in the same set.
+    	Calling union on two roots also unions both of the sets together.
+  
+        * public void union(int root1, int root2) - joins two disjoint sets
+        * public int find(int x) - finds the name of the set containing an item and returns the root of the set
 
-Design Decisions for WUGraph:
+5. Set Kruskal
+	* KruskalEdge
+		We defined our own edge object that is pretty much the same as the Edge object in the set graph.
+		A KruskalEdge has a weight represented by an integer and two DListNodes, which represent vertices.
+		We also wrote a hashcode for the KruskalEdge which is analogous to Edge in the set graph.
+
+Design Decisions for WUGraph (Part I):
 WUGraph
   1. removeVertex() - An Edge object stores three things: two DListNodes 
   and the weight of the edge. Every Vertex has an AdjacencyList that stores 
@@ -85,3 +112,6 @@ WUGraph
   2. getVertices() - WUGraph stores a list of Vertices as an attribute. When
   getVertices is called, the graph simply walks through vertexList and returns 
   the objects that were added to WUGraph.
+
+Design Decisions for Kruskal (Part II):
+Krus

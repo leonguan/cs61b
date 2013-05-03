@@ -1,3 +1,4 @@
+package Kruskal;
 /* Kruskal.java */
 
 import graph.*;
