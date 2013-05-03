@@ -34,6 +34,8 @@ public class WUGraph {
 
 	/**
 	 * vertexCount() returns the number of vertices in the graph.
+	 * 
+	 * @return number of vertices in this graph
 	 *
 	 * Running time:  O(1).
 	 */
@@ -43,6 +45,8 @@ public class WUGraph {
 
 	/**
 	 * edgeCount() returns the number of edges in the graph.
+	 * 
+	 * @return number of edges in this graph
 	 *
 	 * Running time:  O(1).
 	 */
@@ -60,7 +64,7 @@ public class WUGraph {
 	 * vertices!  Return only the same objects that were provided by the
 	 * calling application in calls to addVertex().)
 	 * 
-	 * @return an array of the objects that serve as vertices of the graph
+	 * @return an array of the objects that act as vertices of the graph
 	 *
 	 * Running time:  O(|V|).
 	 */
@@ -85,7 +89,7 @@ public class WUGraph {
 	 * data structures that represent the graph are changed accordingly. 
 	 * If this object is already a vertex of the graph, the graph is unchanged.
 	 *
-	 * @param vertex is the object the user wants to add to the graph
+	 * @param vertex is the object to be added to the graph
 	 * 
 	 * Running time:  O(1).
 	 */
@@ -103,7 +107,7 @@ public class WUGraph {
 	 * represent a vertex of the graph, the graph is unchanged. The internal data
 	 * structures representing the graph are changed accordingly. 
 	 * 
-	 * @param vertex is the object that the user wants to remove from the graph
+	 * @param vertex is the object to be removed from the graph
 	 *
 	 * Running time:  O(d), where d is the degree of "vertex".
 	 */
@@ -136,7 +140,7 @@ public class WUGraph {
 	 * isVertex() returns true if the parameter "vertex" represents a vertex of
 	 * the graph.
 	 * 
-	 * @param vertex is the object the user wants to check
+	 * @param vertex is the object to be checked
 	 * @return true if vertex is in the graph
 	 *
 	 * Running time:  O(1).
@@ -150,8 +154,8 @@ public class WUGraph {
 	 * degree of a vertex.  If the parameter "vertex" doesn't represent a vertex
 	 * of the graph, zero is returned.
 	 * 
-	 * @param vertex is the object the user wants to check
-	 * @return the number of vertices connected to vertex
+	 * @param vertex is the object to be checked
+	 * @return the number of vertices connected to this vertex
 	 *
 	 * Running time:  O(1).
 	 */
@@ -179,7 +183,7 @@ public class WUGraph {
 	 * structure you use to represent vertices!  Return only the same objects
 	 * that were provided by the calling application in calls to addVertex().)
 	 * 
-	 * @param vertex is the object the user wants to inquire about
+	 * @param vertex is the object to be checked
 	 * @return a Neighbor object that contains two arrays
 	 *
 	 * Running time:  O(d), where d is the degree of "vertex".
