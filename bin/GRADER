@@ -1,0 +1,156 @@
+GRADER file for Project 3
+
+Name: Gabriel Tan
+Login: cs61b-qg
+
+Partner 1: Jihui Jin
+Login: cs61b-sg 
+
+Partner 2: Andrew Liu
+Login: cs61b-py
+
+Data Structures:
+1. List Package
+	* List - abstract class
+		A list data structure that holds a size, is able to add to the front and back,
+		check the items in the front and back, and check whether the list is empty.
+	
+    * DList extends List
+    	The doubly-linked list data structure simply references a DListNode as its head.
+    	We use a DList in WUGraph to store the list of vertices in the Graph.
+    	The reason for this is because:
+    		- it can insert in O(1) time (the list is unordered)
+    		- iterate through in O(V) time (in order to obtain all vertices)
+    	
+        * public void insertFront(Object item) - inserts item at the front of the DList
+        * public void insertBack(Object item) - inserts item at the back of the DList
+        * public DListNode find(Object item) - return a DListNode that has the same item as the parameter if it exists. Otherwise, returns null
+        * public ListNode front() - returns the DListNode at the front of the list
+        * public ListNode back() - returns the DListNode at the back of the list
+        
+    * DListNode extends ListNode
+    	A node representing a specific item in a doubly-linked list
+    	We used this data structure for simplicity's sake since we had already written it in a past homework.
+    	
+        * public boolean isValidNode() - isValidNode returns true if this node is valid; false otherwise.
+        * public ListNode next() - next() returns the node following this node.  If this node is invalid, throws an exception.
+        * public ListNode prev() - prev() returns the node before this node.  If this node is invalid, throws an exception.
+        * public void insertAfter(Object item) - insertAfter() inserts an item immediately following this node.  If this node is invalid, throws an exception.
+        * public void insertBefore(Object item) - insertBefore() inserts an item immediately preceding this node.  If this node is invalid, throws an exception.
+        * public void remove() - remove() removes this node from its DList.  If this node is invalid, throws an exception.
+
+
+2. Queue Package
+    * LinkedQueue implements Queue
+    	A queue data structure. We used this specific LinkedQueue for simplicity's sake because we had already written and tested it in previous homeworks.
+    	The most important reason we reused this is because  we had already implemented a quicksort method for it, which we would need for Kruskal's algorithm (part 2).
+    	The fact that the data structure is a queue actually was not utilized in this project. We simply wanted to use a list-type data structure
+    	that would allow us to add objects and then sort later.
+    	
+        * public int size() - returns the size of the LinkedQueue
+        * public boolean isEmpty() - returns whether this is empty 
+        * public void enqueue(Object item) - adds an item to the queue
+        * public Object dequeue() - removes item at front of queue
+        * public Object front() - returns item at front
+        * public boolean find(Object item) - returns true if item in queue
+        * public Object nth(int n) - returns object at nth position
+        * public void append(LinkedQueue q) - appends the contents of q to the end of this in O(1) time
+
+3. HashTable Package
+    * HashTable implements Dictionary
+    	We used the HashTable data structure that we created earlier in the semester to allow us to do look up in O(1) time.
+    	We used the hashtable in several places where regular lookup in adjacency lists or linkedqueues would run on O(n)
+    	By storing out objects in both the lists as well as the hashtable, we can check in the hashtable to determine whether or not
+    	the objects were in the corresponding list.
+    	We wrote hashcodes for the classes whose objects we were planning to hash.
+    	
+        * public int size() - returns number of items in HashTable
+        * public boolean isEmpty() - returns true if this is empty
+        * public Entry insert(Object item) - inserts an item into HashTable
+        * public Entry find(Object item) - finds item in HashTable
+        * public Entry remove(Object item) - removes item from HashTable
+        * public void makeEmpty() - removes all items from HashTable
+    * Entry
+    	A container data structure that simply represents entries in the hash table. This was created along with the HashTable earlier in the semester.
+        * public Object key - returns key
+        * public Object value - returns value
+        * public void setValue - changes value stored
+        
+4. Set Package
+    * DisjointSets
+    	The DisjointSets data structure was given to us and we did not make any modifications to it.
+    	It was used in part 2 (Kruskal's Algorithm) when we wanted to determine whether or not two vertices were already connected.
+    	In the DisjointSets data structure, each object is initially stored in distinct sets, each represented by a unique integer from 1 to n, where n are the number
+    	of objects stored in the set (and the number of distinct sets at the beginning).
+    	Note that each object in the set is mapped to a unique integer.
+    	Calling find on the integer corresponding to an object returns the root of the set the object is in.
+    	Two objects with the same root are in the same set.
+    	Calling union on two roots also unions both of the sets together.
+  
+        * public void union(int root1, int root2) - joins two disjoint sets
+        * public int find(int x) - finds the name of the set containing an item and returns the root of the set
+
+5. Set Kruskal
+	* KruskalEdge
+		We defined our own edge object that is pretty much the same as the Edge object in the set graph.
+		A KruskalEdge has a weight represented by an integer and two DListNodes, which represent vertices.
+		We also wrote a hashcode for the KruskalEdge which is analogous to Edge in the set graph.
+
+Design Decisions for WUGraph (Part I):
+WUGraph
+  We created an int variable that stores that number of edges currently in the 
+  graph. That attribute gets updated everytime addEdge and removeEdge is called.
+  This allows edgeCount() to return in O(1) time.
+  
+  We keep a DList of all vertices so that all of them can be accessed in O(V) time.
+  A DList was chosen over a simple array because of the ease of resizing the list.
+  The vertices are constantly changing and recreating an Array would take too much
+  time. This allows getVertices() to run in O(|V|) time as it simply has to walk 
+  through this stored list. Furthermore, since a DList stores its length, edgeCount()
+  can be returned in O(1) time by calling vertexList().length().
+
+  We store two HashTables inside our WUGraph in order to map the objects they give
+  us as vertices to our implementation of a Vertex object and Edge object. Whenever 
+  addVertex() or addEdge() is called, an internal edge/vertex object is created 
+  and stored as the value of an entry in our hashtable. The keys are either the 
+  objects themselves(vertex) or a VertexPair object that's sole purpose is to ensure 
+  that an edge's key will be the same regardless of the order of the objects that 
+  make up that edge. Furthermore, isEdge can check the HashTable in O(1) time to 
+  find out whether it existsin our implementation of graph or not.
+
+  Vertex: 
+  The Vertex object stores a DList of all adjacent vertices, a DListNode that 
+  references the node in the WUGraph's DList and the object that was passed in.
+  The DList allows quick access of all neighbors(in O(d) time). The DListNode allows 
+  a vertex to remove itself from a graph in O(1) time(not including time to remove 
+  edges).
+
+  Edge:
+  An Edge object stores three things: two DListNodes and the weight of the edge. 
+  Every Vertex has an AdjacencyList that stores all adjacent Vertices. The 
+  first DListNode stores a reference to the node storing vertex2 in vertex1's 
+  AdjacencyList. The second DListNode stores a reference to the node storing 
+  vertex1 in vertex2's AdjacencyList. Using these references, an Edge can 
+  delete itself in O(1) time. Using a HashTable, an edge can be found in O(1) time.
+  Accessing the weight of our internal Edge object will also run in O(1) time.
+
+  removeVertex walks through the vertex's Adjacency List and removes each edge 
+  containing the vertex and each adjacent vertex. Since each deletion runs in 
+  O(1) time, removeVertex() runs in O(d) time.
+
+  
+Design Decisions for Kruskal (Part II):
+For Kruskal's algorithm, we basically followed the instructions that were given in the readme.
+We created our own KruskalEdge that was analogous to the Edge DS that we used in part 1. Each KruskalEdge had two vertices and a weight.
+For the data structure to hold all of our edges, we used a LinkedQueue. We chose the LinkedQueue for simplicity's sake because we had already written and tested it in previous homeworks.
+The most important reason we reused this is because  we had already implemented a quicksort method for it, which we would need for Kruskal's algorithm (part 2).
+The fact that the data structure is a queue actually was not utilized in this project. We simply wanted to use a list-type data structure
+that would allow us to add objects and then sort later.
+Obtaining all of the edges ran in |V| time since there are V vertices and V >> d where d is the number of neighbors for a vertex.
+The sort we used was quicksort, which we implemented for homework and ran in |E| * log |E| time.
+We implemented two Hashtables in order to meet the time requirements.
+The first hashtable was used in coordination with the LinkedQueue to make the LinkedQueue a set effectively. Whenever we added a KruskalEdge, we added it to both the LinkedQueue as well as the hashtable.
+In order to make sure the LinkedQueue held only distinct KruskalEdges, we had to check in the hashtable first to see if the KruskalEdge was already in the LinkedQueue.
+This allowed us to perform lookup in O(1) time rather than O(n) time if we had called find on the LinkedQueue.
+The second hashtable we used was to map edges to integers. By iterating through our sorted LinkedQueue, we hashed each of them and assigned them a corresponding integer from 1 to n where n is the number of edges.
+This allowed us to use the DisjointSet data structure that we were provided.
