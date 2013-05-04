@@ -98,21 +98,47 @@ Data Structures:
 
 Design Decisions for WUGraph (Part I):
 WUGraph
-  1. removeVertex() - An Edge object stores three things: two DListNodes 
-  and the weight of the edge. Every Vertex has an AdjacencyList that stores 
-  all adjacent Vertices. The first DListNode stores a reference to the node 
-  storing vertex2 in vertex1's AdjacencyList. The second DListNode stores a 
-  reference to the node storing vertex1 in vertex2's AdjacencyList. Using
-  these references, an Edge can delete itself in O(1) time.
+  We created an int variable that stores that number of edges currently in the 
+  graph. That attribute gets updated everytime addEdge and removeEdge is called.
+  This allows edgeCount() to return in O(1) time.
+  
+  We keep a DList of all vertices so that all of them can be accessed in O(V) time.
+  A DList was chosen over a simple array because of the ease of resizing the list.
+  The vertices are constantly changing and recreating an Array would take too much
+  time. This allows getVertices() to run in O(|V|) time as it simply has to walk 
+  through this stored list. Furthermore, since a DList stores its length, edgeCount()
+  can be returned in O(1) time by calling vertexList().length().
+
+  We store two HashTables inside our WUGraph in order to map the objects they give
+  us as vertices to our implementation of a Vertex object and Edge object. Whenever 
+  addVertex() or addEdge() is called, an internal edge/vertex object is created 
+  and stored as the value of an entry in our hashtable. The keys are either the 
+  objects themselves(vertex) or a VertexPair object that's sole purpose is to ensure 
+  that an edge's key will be the same regardless of the order of the objects that 
+  make up that edge. Furthermore, isEdge can check the HashTable in O(1) time to 
+  find out whether it existsin our implementation of graph or not.
+
+  Vertex: 
+  The Vertex object stores a DList of all adjacent vertices, a DListNode that 
+  references the node in the WUGraph's DList and the object that was passed in.
+  The DList allows quick access of all neighbors(in O(d) time). The DListNode allows 
+  a vertex to remove itself from a graph in O(1) time(not including time to remove 
+  edges).
+
+  Edge:
+  An Edge object stores three things: two DListNodes and the weight of the edge. 
+  Every Vertex has an AdjacencyList that stores all adjacent Vertices. The 
+  first DListNode stores a reference to the node storing vertex2 in vertex1's 
+  AdjacencyList. The second DListNode stores a reference to the node storing 
+  vertex1 in vertex2's AdjacencyList. Using these references, an Edge can 
+  delete itself in O(1) time. Using a HashTable, an edge can be found in O(1) time.
+  Accessing the weight of our internal Edge object will also run in O(1) time.
 
   removeVertex walks through the vertex's Adjacency List and removes each edge 
   containing the vertex and each adjacent vertex. Since each deletion runs in 
   O(1) time, removeVertex() runs in O(d) time.
 
-  2. getVertices() - WUGraph stores a list of Vertices as an attribute. When
-  getVertices is called, the graph simply walks through vertexList and returns 
-  the objects that were added to WUGraph.
-
+  
 Design Decisions for Kruskal (Part II):
 For Kruskal's algorithm, we basically followed the instructions that were given in the readme.
 We created our own KruskalEdge that was analogous to the Edge DS that we used in part 1. Each KruskalEdge had two vertices and a weight.
